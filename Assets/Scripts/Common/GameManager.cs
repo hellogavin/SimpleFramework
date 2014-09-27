@@ -3,8 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LuaInterface;
+using System.Reflection;
 
 public class GameManager : BaseLua {
+    public LuaScriptMgr luaMgr;
 
     /// <summary>
     /// 初始化游戏管理器
@@ -19,7 +21,6 @@ public class GameManager : BaseLua {
     void Init() {
         InitGui();
         InitManagers();
-        PrintDebugInfo();
         DontDestroyOnLoad(gameObject);  //防止销毁自己
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = Const.GameFrameRate;
@@ -39,15 +40,6 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
-    /// 打印调试信息
-    /// </summary>
-    public void PrintDebugInfo() {
-        Debuger.EnableLog = false;
-        if (!Const.DebugMode) return;
-        Debuger.EnableLog = true;
-    }
-
-    /// <summary>
     /// 初始化管理器
     /// </summary>
     public void InitManagers() {
@@ -58,46 +50,59 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
+    /// 初始化Lua管理器
+    /// </summary>
+    public void InitLuaManager() {
+        luaMgr = new LuaScriptMgr();
+
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        Type[] types = assembly.GetTypes();
+        List<Type> wrapList = new List<Type>();
+        Type wrapType = typeof(ILuaWrap);
+
+        for (int i = 0; i < types.Length; i++) {
+            Type t = types[i];
+
+            if (wrapType.IsAssignableFrom(t) && !t.IsAbstract) {
+                wrapList.Add(t);
+            }
+        }
+        luaMgr.LuaBinding(wrapList);
+    }
+
+    /// <summary>
     /// 资源初始化结束
     /// </summary>
     public void OnResourceInited() {
-        InitObject();
-        string text = "BackupPanel";
-        string[] luapanels = text.Split(',');   //分割lua面板
+        InitLuaManager();
+        luaMgr.DoFile("game");      //加载游戏
+        luaMgr.DoFile("network");   //加载网络
 
+        object[] panels = CallMethod("LuaPanel");
         //---------------------Lua面板---------------------------
-        Global.LuaObjects.Clear();  //加载预先的对象并初始化Lua脚本
-        foreach (string panel in luapanels) {
-            string name = panel.Trim();
+        foreach (object o in panels) {
+            string name = o.ToString().Trim();
             if (string.IsNullOrEmpty(name)) continue;
-            BaseLua.luaNames.Add(name);  //缓存起来
+            name += "Panel";    //添加
 
-            LuaState lua = new LuaState();
-            TextAsset[] scripts = Const.luaScripts;
-            foreach (TextAsset code in scripts) {
-                lua.DoString(code.text);
-            }
-            TextAsset script = io.resourceManager.LoadScript(name + ".lua");
-            if (script != null) lua.DoString(script.text);  //加载对象Lua脚本
-            Global.LuaObjects.Add(name, lua);   //加入对象池
-
-            Debuger.LogWarning("LoadLua---->>>>" + name + ".lua");
+            luaMgr.DoFile(name);
+            Debug.LogWarning("LoadLua---->>>>" + name + ".lua"); 
         }
         //------------------------------------------------------------
-        io.panelManager.CreatePanel("Backup");  //创建面板
+        CallMethod("OnInitOK");   //初始化完成
     }
 
     /// <summary>
     /// 初始化场景
     /// </summary>
     public void OnInitScene() {
-        Debuger.Log("OnInitScene-->>" + Application.loadedLevelName);
+        Debug.Log("OnInitScene-->>" + Application.loadedLevelName);
     }
 
     /// <summary>
     /// 析构函数
     /// </summary>
     void OnDestroy() {
-        Debuger.Log("~GameManager was destroyed");
+        Debug.Log("~GameManager was destroyed");
     }
 }

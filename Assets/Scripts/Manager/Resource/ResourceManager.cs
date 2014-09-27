@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 
 public class ResourceManager : MonoBehaviour {
-    private AssetBundle common;
     private AssetBundle shared;
 
     string AssetPath {
@@ -30,33 +29,15 @@ public class ResourceManager : MonoBehaviour {
     void initialize() {
         byte[] stream;
         string uri = string.Empty;
-        //------------------------------------Common--------------------------------------
-        uri = AssetPath + "common.assetbundle";
-        Debuger.LogWarning("LoadFile::>> " + uri);
-
-        stream = File.ReadAllBytes(uri);
-        common = AssetBundle.CreateFromMemoryImmediate(stream); 
-
-        Const.luaScripts = new TextAsset[2];
-        Const.luaScripts[0] = LoadScript("define.lua");
-        Const.luaScripts[1] = LoadScript("functions.lua");
-
         //------------------------------------Shared--------------------------------------
         uri = AssetPath + "shared.assetbundle";
-        Debuger.LogWarning("LoadFile::>> " + uri);
+        Debug.LogWarning("LoadFile::>> " + uri);
 
         stream = File.ReadAllBytes(uri);
         shared = AssetBundle.CreateFromMemoryImmediate(stream); 
 
         shared.Load("Dialog", typeof(GameObject));
         io.gameManager.OnResourceInited();    //资源初始化完成，回调游戏管理器，执行后续操作 
-    }
-
-    /// <summary>
-    /// 载入Lua脚本
-    /// </summary>
-    public TextAsset LoadScript(string name) {
-        return common.Load(name) as TextAsset;
     }
 
     /// <summary>
@@ -68,7 +49,7 @@ public class ResourceManager : MonoBehaviour {
         AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(stream); //关联数据的素材绑定
 
         io.panelManager.OnRequestResource(name, bundle);  //回传给面板管理器
-        Debuger.LogWarning("LoadFile::>> " + uri + " " + bundle);
+        Debug.LogWarning("LoadFile::>> " + uri + " " + bundle);
     }
 
     /// <summary>
@@ -76,7 +57,6 @@ public class ResourceManager : MonoBehaviour {
     /// </summary>
     void OnDestroy() {
         if (shared != null) shared.Unload(true);
-        if (common != null) common.Unload(true);
-        Debuger.Log("~ResourceManager was destroy!");
+        Debug.Log("~ResourceManager was destroy!");
     }
 }

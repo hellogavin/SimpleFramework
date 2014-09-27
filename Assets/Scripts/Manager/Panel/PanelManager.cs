@@ -55,9 +55,9 @@ public class PanelManager : MonoBehaviour {
             go.AddComponent<BaseLua>().OnInit(bundle);
         }
         if (go == null) {
-            Debuger.LogError("OnCreatePanel :>" + name + " error!~");
+            Debug.LogError("OnCreatePanel :>" + name + " error!~");
             return;
         }
-        Debuger.Log("OnCreatePanel------>>>>" + name);
+        Debug.Log("OnCreatePanel------>>>>" + name);
     }
 }

@@ -499,4 +499,26 @@ public class Util : MonoBehaviour {
     public static bool isFight {
         get { return Application.loadedLevelName.CompareTo("fight") == 0; }
     }
+
+    /// <summary>
+    /// È¡µÃLuaÂ·¾¶
+    /// </summary>
+    public static string LuaPath(string name) {
+        if (name.EndsWith(".lua")) {
+            return Application.dataPath + "/lua/" + name;
+        }
+        return Application.dataPath + "/lua/" + name + ".lua";
+    }
+
+    public static void Log(string str) {
+        Debug.Log(str);
+    }
+
+    public static void LogWarning(string str) {
+        Debug.LogWarning(str);
+    }
+
+    public static void LogError(string str) {
+        Debug.LogError(str);
+    }  
 }

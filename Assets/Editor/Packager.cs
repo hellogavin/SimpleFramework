@@ -32,7 +32,6 @@ public class Packager {
     /// </summary>
     [MenuItem("Game/Build Bundle Resource")]
     public static void BuildAssetResource() {
-        UpdateResource();               //先更新资源
         Object mainAsset = null;        //主素材名，单个
         Object[] addiAssets = null;     //附加素材名，多个
         string assetfile = string.Empty;  //素材文件名
@@ -48,15 +47,6 @@ public class Packager {
         }
         string assetPath = Application.dataPath + "/StreamingAssets/asset/" + target + "/";
         if (!Directory.Exists(assetPath)) Directory.CreateDirectory(assetPath);
-
-        ///-----------------------------生成共享的Lua资源---------------------------------------
-        addiAssets = new Object[3];   //附加脚本素材
-        addiAssets[0] = LoadAsset("Common/Scripts/define.lua");
-        addiAssets[1] = LoadAsset("Common/Scripts/functions.lua");
-        addiAssets[2] = LoadAsset("Backup/Scripts/BackupPanel.lua");
-
-        assetfile = assetPath + "common.assetbundle";
-        BuildPipeline.BuildAssetBundle(null, addiAssets, assetfile, options, target);
 
         ///-----------------------------生成共享的关联性素材绑定-------------------------------------
         BuildPipeline.PushAssetDependencies();
@@ -74,32 +64,6 @@ public class Packager {
 
         ///-------------------------------刷新---------------------------------------
         BuildPipeline.PopAssetDependencies();
-        AssetDatabase.Refresh();
-    }
-
-    /// <summary>
-    /// 更新资源:把lua文件生成txt
-    /// </summary>
-    static void UpdateResource() {
-        paths.Clear(); files.Clear();
-        Recursive(AppDataPath + "/Builds/");
-
-        for (int i = 0; i < files.Count; i++) {
-            string file = files[i];
-            if (!file.EndsWith(".lua")) continue;
-
-            string newfile = file + ".txt";
-            if (File.Exists(newfile)) File.Delete(newfile);
-
-            string[] oldContent = File.ReadAllLines(file);
-            List<string> newContent = new List<string>();
-            for (int j = 0; j < oldContent.Length; j++) {
-                string str = oldContent[j].Trim();
-                if (str.StartsWith("--")) continue; //如果是注释行，调过，不写入文件
-                newContent.Add(oldContent[j]);
-            }
-            File.WriteAllLines(newfile, newContent.ToArray(), System.Text.Encoding.UTF8);
-        }
         AssetDatabase.Refresh();
     }
 
