@@ -1,0 +1,8 @@
+﻿
+function Start()
+	warn("Start lua--->>"..gameObject.name);
+end
+
+function OnClick()
+	error("OnClick---->>>"..gameObject.name);
+end
