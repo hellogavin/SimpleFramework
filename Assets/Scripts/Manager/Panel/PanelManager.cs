@@ -2,11 +2,17 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public class KeyValue {
+    public string key;
+    public string value;
+    public KeyValue(string key, string value) {
+        this.key = key; this.value = value;
+    }
+}
+
 public class PanelManager : MonoBehaviour {
     private Transform parent;
-    ///排除列表
-    ///Lua可以通过ioo.panelManager.excludes来添加删除
-    public List<string> excludes = new List<string>(); 
+    private static Queue<KeyValue> events = new Queue<KeyValue>();
 
     Transform Parent {
         get {
@@ -17,12 +23,22 @@ public class PanelManager : MonoBehaviour {
         }
     }
 
+    void Update() {
+        if (events.Count == 0) return;
+        KeyValue ev = events.Dequeue();
+        string name = ev.key;
+        string text = ev.value;
+        AssetBundle bundle = io.resourceManager.LoadBundle(name);
+        StartCoroutine(StartCreatePanel(name, bundle, text));
+        Debug.LogWarning("CreatePanel::>> " + name + " " + bundle);
+    }
+
     /// <summary>
     /// 创建面板，请求资源管理器
     /// </summary>
     /// <param name="type"></param>
-    public void CreatePanel(string name) {
-        io.resourceManager.RequestResource(name); 
+    public void CreatePanel(string name, string text = null) {
+        events.Enqueue(new KeyValue(name, text));
     }
 
     /// <summary>
@@ -35,29 +51,23 @@ public class PanelManager : MonoBehaviour {
     /// <summary>
     /// 创建面板
     /// </summary>
-    void StartCreatePanel(string name, AssetBundle bundle, string text = null) {
-        name += "Panel";   //面板与处理器分开处理
-
+    IEnumerator StartCreatePanel(string name, AssetBundle bundle, string text = null) {
+        name += "Panel";
         GameObject prefab = bundle.Load(name) as GameObject;
-        if (Parent.FindChild(name) != null || prefab == null) return;
-
+        yield return new WaitForEndOfFrame();
+        if (Parent.FindChild(name) != null || prefab == null) {
+            yield break;
+        }
         GameObject go = Instantiate(prefab) as GameObject;
         go.name = name;
+        go.layer = LayerMask.NameToLayer("Default");
         go.transform.parent = Parent;
         go.transform.localScale = Vector3.one;
         go.transform.localPosition = Vector3.zero;
 
-        bool canAdd = true;
-        for (int i = 0; i < excludes.Count; i++) {
-            if (name.Equals(excludes[i])) { canAdd = false; break; }
-        }
-        if (canAdd) {
-            go.AddComponent<BaseLua>().OnInit(bundle);
-        }
-        if (go == null) {
-            Debug.LogError("OnCreatePanel :>" + name + " error!~");
-            return;
-        }
-        Debug.Log("OnCreatePanel------>>>>" + name);
+        yield return new WaitForEndOfFrame();
+        go.AddComponent<BaseLua>().OnInit(bundle);
+
+        Debug.Log("StartCreatePanel------>>>>" + name);
     }
 }

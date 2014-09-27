@@ -41,15 +41,15 @@ public class ResourceManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// 载入对象
+    /// 载入素材
     /// </summary>
-    public void RequestResource(string name) {
+    public AssetBundle LoadBundle(string name) {
+        byte[] stream = null;
+        AssetBundle bundle = null;
         string uri = AssetPath + name.ToLower() + ".assetbundle";
-        byte[] stream = File.ReadAllBytes(uri);
-        AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(stream); //关联数据的素材绑定
-
-        io.panelManager.OnRequestResource(name, bundle);  //回传给面板管理器
-        Debug.LogWarning("LoadFile::>> " + uri + " " + bundle);
+        stream = File.ReadAllBytes(uri);
+        bundle = AssetBundle.CreateFromMemoryImmediate(stream); //关联数据的素材绑定
+        return bundle;
     }
 
     /// <summary>

@@ -1,13 +1,12 @@
 module("GameManager", package.seeall)
 
-require "define"
 require "functions"
 
 --管理器--
 local game;	
 
 function LuaPanel()
-	return 'Backup', 'Login';
+	return 'Prompt', 'Message';
 end
 
 function Awake()
@@ -22,7 +21,7 @@ end
 --初始化完成--
 function OnInitOK()
 	warn('OnInitOK--->>>');
-	io.panelManager:CreatePanel("Backup");
+	createPanel("Prompt");
 end
 
 --销毁--

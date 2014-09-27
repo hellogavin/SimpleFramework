@@ -33,7 +33,7 @@ public class Packager {
     [MenuItem("Game/Build Bundle Resource")]
     public static void BuildAssetResource() {
         Object mainAsset = null;        //主素材名，单个
-        Object[] addiAssets = null;     //附加素材名，多个
+        Object[] addis = null;     //附加素材名，多个
         string assetfile = string.Empty;  //素材文件名
 
         BuildAssetBundleOptions options = BuildAssetBundleOptions.UncompressedAssetBundle | BuildAssetBundleOptions.CollectDependencies |
@@ -55,10 +55,19 @@ public class Packager {
         mainAsset = LoadAsset("Shared/Atlas/Dialog.prefab");
         BuildPipeline.BuildAssetBundle(mainAsset, null, assetfile, options, target);
 
-        ///------------------------------生成BackupPanel素材绑定-----------------------------------
+        ///------------------------------生成PromptPanel素材绑定-----------------------------------
         BuildPipeline.PushAssetDependencies();
-        mainAsset = LoadAsset("Backup/Prefabs/BackupPanel.prefab");
-        assetfile = assetPath + "backup.assetbundle";
+        mainAsset = LoadAsset("Prompt/Prefabs/PromptPanel.prefab");
+        addis = new Object[1];
+        addis[0] = LoadAsset("Prompt/Prefabs/PromptItem.prefab");
+        assetfile = assetPath + "prompt.assetbundle";
+        BuildPipeline.BuildAssetBundle(mainAsset, addis, assetfile, options, target);
+        BuildPipeline.PopAssetDependencies();
+
+        ///------------------------------生成MessagePanel素材绑定-----------------------------------
+        BuildPipeline.PushAssetDependencies();
+        mainAsset = LoadAsset("Message/Prefabs/MessagePanel.prefab");
+        assetfile = assetPath + "message.assetbundle";
         BuildPipeline.BuildAssetBundle(mainAsset, null, assetfile, options, target);
         BuildPipeline.PopAssetDependencies();
 

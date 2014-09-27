@@ -29,8 +29,17 @@ function destroy(obj)
 	GameObject.Destroy(obj);
 end
 
-function instantiate(prefab)
+function newobject(prefab)
 	return GameObject.Instantiate(prefab);
+end
+
+--创建面板--
+local panelMgr = nil;
+function createPanel(name)
+	if panelMgr == nil then
+		panelMgr = io.panelManager;
+	end
+	panelMgr:CreatePanel(name);
 end
 
 function child(str)
