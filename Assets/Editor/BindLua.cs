@@ -41,8 +41,10 @@ public static class LuaBinding
         new BindType("MonoBehaviour", typeof(MonoBehaviour), false, "Behaviour"),
 
         new BindType("io", typeof(io), true, "io"), 
-        new BindType("Util", typeof(Util), true, "Util"), 
+        new BindType("Util", typeof(Util), false, "Util"), 
+        new BindType("Const", typeof(Const), false, "Const"), 
         new BindType("LuaHelper", typeof(LuaHelper), false, "LuaHelper"), 
+        new BindType("ByteBuffer", typeof(ByteBuffer), false, "ByteBuffer"), 
         new BindType("UIEventListener", typeof(UIEventListener), false, "UIEventListener"), 
     };
 

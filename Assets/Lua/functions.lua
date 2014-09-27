@@ -1,5 +1,3 @@
---常用函数定义--
-
 --输出日志--
 function log(str)
     Util.Log(str);
@@ -34,12 +32,8 @@ function newobject(prefab)
 end
 
 --创建面板--
-local panelMgr = nil;
 function createPanel(name)
-	if panelMgr == nil then
-		panelMgr = io.panelManager;
-	end
-	panelMgr:CreatePanel(name);
+	io.panelManager:CreatePanel(name);
 end
 
 function child(str)

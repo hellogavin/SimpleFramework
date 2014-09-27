@@ -73,16 +73,6 @@ public class BaseLua : MonoBehaviour {
     }
 
     /// <summary>
-    /// 执行Lua方法-Web消息
-    /// </summary>
-    protected object[] CallMethod(string func, int key, object value) {
-        if (luaMgr == null) return null;
-        string funcName = "network." + func;
-        funcName = funcName.Replace("(Clone)", "");
-        return mgr.CallLuaFunction(funcName, key, value);
-    }
-
-    /// <summary>
     /// 执行Lua方法-Socket消息
     /// </summary>
     protected object[] CallMethod(string func, int key, ByteBuffer buffer) {

@@ -22,6 +22,10 @@ end
 function OnInitOK()
 	warn('OnInitOK--->>>');
 	createPanel("Prompt");
+
+    Const.SocketPort = 2012;
+    Const.SocketAddress = "127.0.0.1";
+    io.networkManager:SendConnect();
 end
 
 --销毁--

@@ -46,6 +46,8 @@ public class GameManager : BaseLua {
         Util.Add<PanelManager>(gameObject);
         Util.Add<MusicManager>(gameObject);
         Util.Add<TimerManager>(gameObject);
+        Util.Add<SocketClient>(gameObject);
+        Util.Add<NetworkManager>(gameObject);
         Util.Add<ResourceManager>(gameObject);
     }
 
@@ -73,7 +75,7 @@ public class GameManager : BaseLua {
     /// <summary>
     /// 资源初始化结束
     /// </summary>
-    public void OnResourceInited() {
+    public void OnResourceInited() { 
         InitLuaManager();
         luaMgr.DoFile("game");      //加载游戏
         luaMgr.DoFile("network");   //加载网络

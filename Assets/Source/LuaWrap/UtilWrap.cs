@@ -64,7 +64,20 @@ public class UtilWrap : ILuaWrap
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int Create(IntPtr l)
 	{
-		LuaDLL.luaL_error(l, "Util class does not have a constructor function");
+		int count = LuaDLL.lua_gettop(l);
+		object obj = null;
+
+		if (count == 0)
+		{
+			obj = new Util();
+			luaMgr.PushResult(obj);
+			return 1;
+		}
+		else
+		{
+			LuaDLL.luaL_error(l, "The best overloaded method match for 'Util.New' has some invalid arguments");
+		}
+
 		return 0;
 	}
 

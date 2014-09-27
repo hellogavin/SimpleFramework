@@ -9,7 +9,12 @@ public class ByteBuffer {
     BinaryWriter writer = null;
     BinaryReader reader = null;
 
-    private ByteBuffer(byte[] data) {
+    public ByteBuffer() {
+        stream = new MemoryStream();
+        writer = new BinaryWriter(stream);
+    }
+
+    public ByteBuffer(byte[] data) {
         if (data != null) {
             stream = new MemoryStream(data);
             reader = new BinaryReader(stream);
@@ -17,14 +22,6 @@ public class ByteBuffer {
             stream = new MemoryStream();
             writer = new BinaryWriter(stream);
         }
-    }
-
-    public static ByteBuffer Create(byte[] data) {
-        return new ByteBuffer(data);
-    }
-
-    public static ByteBuffer Create() {
-        return new ByteBuffer(null);
     }
 
     public void Close() {
@@ -42,15 +39,15 @@ public class ByteBuffer {
     }
 
     public void WriteInt(int v) {
-        writer.Write(Converter.GetBigEndian((int)v));
+        writer.Write((int)v);
     }
 
     public void WriteShort(ushort v) {
-        writer.Write(Converter.GetBigEndian((ushort)v));
+        writer.Write((ushort)v);
     }
 
     public void WriteLong(long v) {
-        writer.Write(Converter.GetBigEndian((long)v));
+        writer.Write((long)v);
     }
 
     public void WriteFloat(float v) {
@@ -66,8 +63,8 @@ public class ByteBuffer {
     }
 
     public void WriteString(string v) {
-        writer.Write(Converter.GetBigEndian((ushort)v.Length));
         byte[] bytes = Encoding.UTF8.GetBytes(v);
+        writer.Write((ushort)bytes.Length);
         writer.Write(bytes);
     }
 
@@ -76,15 +73,15 @@ public class ByteBuffer {
     }
 
     public int ReadInt() {
-        return Converter.GetBigEndian((int)reader.ReadInt32());
+        return (int)reader.ReadInt32();
     }
 
     public ushort ReadShort() {
-        return Converter.GetBigEndian((ushort)reader.ReadInt16());
+        return (ushort)reader.ReadInt16();
     }
 
     public long ReadLong() {
-        return Converter.GetBigEndian((long)reader.ReadInt64());
+        return (long)reader.ReadInt64();
     }
 
     public float ReadFloat() {

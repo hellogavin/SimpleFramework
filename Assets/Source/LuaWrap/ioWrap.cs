@@ -27,6 +27,7 @@ public class ioWrap : ILuaWrap
 		new LuaField("resourceManager", get_resourceManager, null),
 		new LuaField("timerManager", get_timerManager, null),
 		new LuaField("musicManager", get_musicManager, null),
+		new LuaField("networkManager", get_networkManager, null),
 		new LuaField("MainUI", get_MainUI, null),
 		new LuaField("guiCamera", get_guiCamera, null),
 	};
@@ -85,6 +86,12 @@ public class ioWrap : ILuaWrap
 	static bool get_musicManager(IntPtr l)
 	{
 		luaMgr.PushResult(io.musicManager);
+		return true;
+	}
+
+	static bool get_networkManager(IntPtr l)
+	{
+		luaMgr.PushResult(io.networkManager);
 		return true;
 	}
 

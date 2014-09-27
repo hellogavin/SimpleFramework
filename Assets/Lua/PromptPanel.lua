@@ -46,5 +46,9 @@ end
 --单击事件--
 function OnClick()
 	warn("OnClick---->>>"..gameObject.name);
-	createPanel("Message"); --Lua里创建面板
+    local buffer = ByteBuffer.New();
+    buffer:WriteShort(Login);
+    buffer:WriteString("ffff我的ffffQ靈uuu");
+    buffer:WriteInt(200);
+    io.networkManager:SendMessage(buffer);
 end

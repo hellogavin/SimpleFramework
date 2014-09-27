@@ -80,6 +80,18 @@ public class io {
     }
 
     /// <summary>
+    /// 网络管理器
+    /// </summary>
+    private static NetworkManager _networkManager = null;
+    public static NetworkManager networkManager {
+        get {
+            if (_networkManager == null)
+                _networkManager = manager.GetComponent<NetworkManager>();
+            return _networkManager;
+        }
+    }
+
+    /// <summary>
     /// 获取描点对象
     /// </summary>
     private static Transform _mainUi;
