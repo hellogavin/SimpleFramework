@@ -40,7 +40,7 @@ public class BaseLua : MonoBehaviour {
     public void OnInit(AssetBundle bundle, string text = null) {
         InitPanel(); this.bundle = bundle; //初始化
         this.data = text;   //初始化附加参数
-        if (Debug.isDebugBuild) Debug.LogWarning("OnInit---->>>text:>" + text);
+        Debuger.LogWarning("OnInit---->>>text:>" + text);
     }
 
     /// <summary>
@@ -85,9 +85,8 @@ public class BaseLua : MonoBehaviour {
         TextAsset[] scripts = Const.luaScripts;
         foreach (TextAsset code in scripts) {
             lua.DoString(code.text);
-            if (Debug.isDebugBuild) Debug.LogWarning("LoadLua---->>>>" + code.name);
+            Debuger.LogWarning("LoadLua---->>>>" + code.name);
         }
-        SetLuaData(lua);
     }
 
     /// <summary>
@@ -112,13 +111,6 @@ public class BaseLua : MonoBehaviour {
         object o = Global.LuaObjects[name];
         if (o == null) return;
         lua = o as LuaState;
-        SetLuaData(lua);    //把transform跟gameObject传递给Lua    
-
-        ///关联界面上所有按钮消息
-        UIButton[] buttons = GetComponentsInChildren<UIButton>();
-        for (int i = 0; i < buttons.Length; i++) {
-            EventDelegate.Add(buttons[i].onClick, OnClick);
-        }
     }
 
     /// <summary>
@@ -126,14 +118,6 @@ public class BaseLua : MonoBehaviour {
     /// </summary>
     public void InitScript(TextAsset code) {
         lua.DoString(code.text);
-    }
-
-    /// <summary>
-    /// 设置Lua数据
-    /// </summary>
-    protected void SetLuaData(LuaState lua) {
-        lua["transform"] = transform;
-        lua["gameObject"] = gameObject;
     }
 
     /// <summary>

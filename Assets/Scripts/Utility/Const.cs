@@ -9,6 +9,7 @@ public class Const {
     public static bool InnerNetMode = true;                     //内网模式-使用内网模式
 
     public static int TimerInterval = 1;
+    public static int GameFrameRate = 30;                       //游戏帧频
 
     public static TextAsset[] luaScripts;                       //Lua公共脚本
 

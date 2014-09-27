@@ -71,6 +71,9 @@ public class UIPanelInspector : UIRectEditor
 
 	public void OnSceneGUI ()
 	{
+		UICamera cam = UICamera.FindCameraForLayer(mPanel.gameObject.layer);
+		if (cam == null || !cam.cachedCamera.isOrthoGraphic) return;
+
 		NGUIEditorTools.HideMoveTool(true);
 		if (!UIWidget.showHandles) return;
 
@@ -593,6 +596,11 @@ public class UIPanelInspector : UIRectEditor
 				mPanel.RebuildAllDrawCalls();
 				EditorUtility.SetDirty(mPanel);
 			}
+
+			GUILayout.BeginHorizontal();
+			NGUIEditorTools.DrawProperty("Padding", serializedObject, "softBorderPadding", GUILayout.Width(100f));
+			GUILayout.Label("Soft border pads content", GUILayout.MinWidth(20f));
+			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			bool off = EditorGUILayout.Toggle("Offset", mPanel.anchorOffset, GUILayout.Width(100f));

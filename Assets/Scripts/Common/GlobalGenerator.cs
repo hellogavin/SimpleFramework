@@ -6,23 +6,25 @@ using System.Collections;
 /// 如果游戏管理器已经存在了，就跳过了，否则创建游戏管理器，来保证游戏里只有一个GameManager
 /// </summary>
 public class GlobalGenerator : MonoBehaviour {
-    private static GameObject prefab;
 
     void Awake() {
         InitGameMangager();
+    }
+
+    void Start() {
+        io.gameManager.OnInitScene();
     }
 
     /// <summary>
     /// 实例化游戏管理器
     /// </summary>
     public void InitGameMangager() {
-        GameObject gameManager = GameObject.Find("GameManager");
-        if (gameManager == null) {
-            if (prefab == null) {
-                prefab = Resources.Load("Prefabs/GameManager", typeof(GameObject)) as GameObject;
-            }
-            gameManager = Instantiate(prefab) as GameObject;
-            gameManager.name = "GameManager";
+        string name = "GameManager";
+        GameObject manager = GameObject.Find(name);
+        if (manager == null) {
+            GameObject prefab = io.LoadPrefab(name);
+            manager = Instantiate(prefab) as GameObject;
+            manager.name = name;
         }
     }
 }

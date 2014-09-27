@@ -17,15 +17,34 @@ public class GameManager : BaseLua {
     /// 初始化
     /// </summary>
     void Init() {
-        InitManagers(); 
+        InitGui();
+        InitManagers();
+        PrintDebugInfo();
         DontDestroyOnLoad(gameObject);  //防止销毁自己
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        Application.targetFrameRate = Const.GameFrameRate;
     }
 
     /// <summary>
-    /// 帧频更新
+    /// 初始化GUI
     /// </summary>
-    void Update() {
+    public void InitGui() {
+        string name = "GUI";
+        GameObject gui = GameObject.Find(name);
+        if (gui != null) return;
+
+        GameObject prefab = io.LoadPrefab(name);
+        gui = Instantiate(prefab) as GameObject;
+        gui.name = name;
+    }
+
+    /// <summary>
+    /// 打印调试信息
+    /// </summary>
+    public void PrintDebugInfo() {
+        Debuger.EnableLog = false;
+        if (!Const.DebugMode) return;
+        Debuger.EnableLog = true;
     }
 
     /// <summary>
@@ -43,13 +62,6 @@ public class GameManager : BaseLua {
     /// </summary>
     public void OnResourceInited() {
         InitObject();
-        StartCoroutine(OnReqLuainfo()); //加载服务器端Lua配置
-    }
-
-    /// <summary>
-    /// 请求服务器Lua信息
-    /// </summary>
-    IEnumerator OnReqLuainfo() {
         string text = "BackupPanel";
         string[] luapanels = text.Split(',');   //分割lua面板
 
@@ -69,17 +81,23 @@ public class GameManager : BaseLua {
             if (script != null) lua.DoString(script.text);  //加载对象Lua脚本
             Global.LuaObjects.Add(name, lua);   //加入对象池
 
-            if (Debug.isDebugBuild) Debug.LogWarning("LoadLua---->>>>" + name + ".lua");
-            yield return 0;
+            Debuger.LogWarning("LoadLua---->>>>" + name + ".lua");
         }
         //------------------------------------------------------------
         io.panelManager.CreatePanel("Backup");  //创建面板
     }
 
     /// <summary>
+    /// 初始化场景
+    /// </summary>
+    public void OnInitScene() {
+        Debuger.Log("OnInitScene-->>" + Application.loadedLevelName);
+    }
+
+    /// <summary>
     /// 析构函数
     /// </summary>
     void OnDestroy() {
-        if (Debug.isDebugBuild) print("~GameManager was destroyed");
+        Debuger.Log("~GameManager was destroyed");
     }
 }

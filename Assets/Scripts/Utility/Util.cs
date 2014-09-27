@@ -468,4 +468,35 @@ public class Util : MonoBehaviour {
         }
         return path;
     }
+
+    /// <summary>
+    /// 添加lua单机事件
+    /// </summary>
+    public static void AddClick(GameObject go, System.Object luafuc) {
+        UIEventListener.Get(go).onClick += delegate(GameObject o) {
+            LuaInterface.LuaFunction func = (LuaInterface.LuaFunction)luafuc;
+            func.Call();
+        };
+    }
+
+    /// <summary>
+    /// 是否是登录场景
+    /// </summary>
+    public static bool isLogin {
+        get { return Application.loadedLevelName.CompareTo("login") == 0; }
+    }
+
+    /// <summary>
+    /// 是否是城镇场景
+    /// </summary>
+    public static bool isMain {
+        get { return Application.loadedLevelName.CompareTo("main") == 0; }
+    }
+
+    /// <summary>
+    /// 判断是否是战斗场景
+    /// </summary>
+    public static bool isFight {
+        get { return Application.loadedLevelName.CompareTo("fight") == 0; }
+    }
 }

@@ -1,3 +1,4 @@
+luanet.load_assembly("System");
 luanet.load_assembly("Assembly-CSharp")
 
 ioo = luanet.import_type("io");

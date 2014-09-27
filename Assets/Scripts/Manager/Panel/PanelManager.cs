@@ -11,7 +11,7 @@ public class PanelManager : MonoBehaviour {
     Transform Parent {
         get {
             if (parent == null) {
-                parent = Camera.main.transform;
+                parent = io.guiCamera;
             }
             return parent;
         }
@@ -54,11 +54,10 @@ public class PanelManager : MonoBehaviour {
         if (canAdd) {
             go.AddComponent<BaseLua>().OnInit(bundle);
         }
-
         if (go == null) {
-            if (Debug.isDebugBuild) Debug.LogError("OnCreatePanel :>" + name + " error!~");
+            Debuger.LogError("OnCreatePanel :>" + name + " error!~");
             return;
         }
-        if (Debug.isDebugBuild) Debug.Log("OnCreatePanel------>>>>" + name);
+        Debuger.Log("OnCreatePanel------>>>>" + name);
     }
 }

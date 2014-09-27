@@ -21,24 +21,21 @@ public class ResourceManager : MonoBehaviour {
     }
 
     void Awake() {
-        StartCoroutine(OnInitialize());
+        initialize();
     }
 	
     /// <summary>
     /// 初始化
     /// </summary>
-    IEnumerator OnInitialize() {
+    void initialize() {
         byte[] stream;
         string uri = string.Empty;
-        AssetBundleCreateRequest request;
         //------------------------------------Common--------------------------------------
         uri = AssetPath + "common.assetbundle";
-        if (Debug.isDebugBuild) Debug.LogWarning("LoadFile::>> " + uri);
+        Debuger.LogWarning("LoadFile::>> " + uri);
 
         stream = File.ReadAllBytes(uri);
-        request = AssetBundle.CreateFromMemory(stream);
-        yield return request;
-        common = request.assetBundle;
+        common = AssetBundle.CreateFromMemoryImmediate(stream); 
 
         Const.luaScripts = new TextAsset[2];
         Const.luaScripts[0] = LoadScript("define.lua");
@@ -46,12 +43,10 @@ public class ResourceManager : MonoBehaviour {
 
         //------------------------------------Shared--------------------------------------
         uri = AssetPath + "shared.assetbundle";
-        if (Debug.isDebugBuild) Debug.LogWarning("LoadFile::>> " + uri);
+        Debuger.LogWarning("LoadFile::>> " + uri);
 
         stream = File.ReadAllBytes(uri);
-        request = AssetBundle.CreateFromMemory(stream);
-        yield return request;
-        shared = request.assetBundle;
+        shared = AssetBundle.CreateFromMemoryImmediate(stream); 
 
         shared.Load("Dialog", typeof(GameObject));
         io.gameManager.OnResourceInited();    //资源初始化完成，回调游戏管理器，执行后续操作 
@@ -68,20 +63,12 @@ public class ResourceManager : MonoBehaviour {
     /// 载入对象
     /// </summary>
     public void RequestResource(string name) {
-        StartCoroutine(OnLoadObject(name));
-    }
-
-    /// <summary>
-    /// 载入对象
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator OnLoadObject(string name, string text = null) {
         string uri = AssetPath + name.ToLower() + ".assetbundle";
         byte[] stream = File.ReadAllBytes(uri);
-        AssetBundleCreateRequest request = AssetBundle.CreateFromMemory(stream); //关联数据的素材绑定
-        yield return request;
-        io.panelManager.OnRequestResource(name, request.assetBundle);  //回传给面板管理器
-        if (Debug.isDebugBuild) Debug.LogWarning("LoadFile::>> " + uri + " " + request.assetBundle);
+        AssetBundle bundle = AssetBundle.CreateFromMemoryImmediate(stream); //关联数据的素材绑定
+
+        io.panelManager.OnRequestResource(name, bundle);  //回传给面板管理器
+        Debuger.LogWarning("LoadFile::>> " + uri + " " + bundle);
     }
 
     /// <summary>
@@ -90,6 +77,6 @@ public class ResourceManager : MonoBehaviour {
     void OnDestroy() {
         if (shared != null) shared.Unload(true);
         if (common != null) common.Unload(true);
-        print("~ResourceManager was destroy!");
+        Debuger.Log("~ResourceManager was destroy!");
     }
 }

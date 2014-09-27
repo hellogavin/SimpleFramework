@@ -616,7 +616,7 @@ public class UIInput : MonoBehaviour
 				}
 
 				UpdateLabel();
-				return;
+				if (string.IsNullOrEmpty(Input.inputString)) return;
 			}
 #if MOBILE
 			if (mKeyboard != null)
@@ -757,6 +757,9 @@ public class UIInput : MonoBehaviour
 		bool ctrl = isMac ?
 			((ev.modifiers & EventModifiers.Command) != 0) :
 			((ev.modifiers & EventModifiers.Control) != 0);
+
+		// http://www.tasharen.com/forum/index.php?topic=10780.0
+		if ((ev.modifiers & EventModifiers.Alt) != 0) ctrl = false;
 
 		bool shift = ((ev.modifiers & EventModifiers.Shift) != 0);
 
@@ -1079,7 +1082,7 @@ public class UIInput : MonoBehaviour
 		Ray ray = UICamera.currentRay;
 		Plane p = new Plane(corners[0], corners[1], corners[2]);
 		float dist;
-		return p.Raycast(ray, out dist) ? mDrawStart + label.GetCharacterIndexAtPosition(ray.GetPoint(dist)) : 0;
+		return p.Raycast(ray, out dist) ? mDrawStart + label.GetCharacterIndexAtPosition(ray.GetPoint(dist), false) : 0;
 	}
 
 	/// <summary>

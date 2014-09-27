@@ -1,5 +1,10 @@
-﻿
+﻿local gameObject;
+
 function Start()
+	local button = find("Button");
+	Util.AddClick(button, OnClick);
+	
+	gameObject = find("BackupPanel");
 	warn("Start lua--->>"..gameObject.name);
 end
 
