@@ -5,7 +5,7 @@ require "functions"
 --管理器--
 local game;	
 
-function LuaPanel()
+function LuaScriptPanel()
 	return 'Prompt', 'Message';
 end
 
@@ -18,7 +18,7 @@ function Start()
 	--warn('Start--->>>');
 end
 
---初始化完成--
+--初始化完成，发送链接服务器信息--
 function OnInitOK()
 	warn('OnInitOK--->>>');
 	createPanel("Prompt");

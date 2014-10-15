@@ -34,7 +34,7 @@ public class Util : MonoBehaviour {
         return uid.Remove(0, position + 1);
     }
 
-    public static long GetTime() {
+    public static long GetTime() { 
         TimeSpan ts = new TimeSpan(DateTime.UtcNow.Ticks - new DateTime(1970, 1, 1, 0, 0, 0).Ticks);
         return (long)ts.TotalMilliseconds;
     }

@@ -1,13 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using LuaInterface;
-using Object = UnityEngine.Object;
 
-public class LuaHelperWrap : ILuaWrap
+public class LuaHelperWrap
 {
-	public static LuaScriptMgr luaMgr = null;
-	public static int reference = -1;
-
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
 		new LuaMethod("GetType", GetType),
@@ -25,146 +21,87 @@ public class LuaHelperWrap : ILuaWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr l)
+	static int Create(IntPtr L)
 	{
-		LuaDLL.luaL_error(l, "LuaHelper class does not have a constructor function");
+		LuaDLL.luaL_error(L, "LuaHelper class does not have a constructor function");
 		return 0;
 	}
 
-	public void Register()
+	public static void Register(IntPtr L)
 	{
-		LuaMethod[] metas = new LuaMethod[]
-		{
-			new LuaMethod("__index", Lua_Index),
-			new LuaMethod("__newindex", Lua_NewIndex),
-		};
-
-		luaMgr = LuaScriptMgr.Instance;
-		reference = luaMgr.RegisterLib("LuaHelper", regs);
-		luaMgr.CreateMetaTable("LuaHelper", metas, typeof(LuaHelper));
-		luaMgr.RegisterField(typeof(LuaHelper), fields);
-	}
-
-	public static bool TryLuaIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.Index(reference, str, fields))
-		{
-			return true;
-		}
-
-		return LuaHelperWrap.TryLuaIndex(l);
+		LuaScriptMgr.RegisterLib(L, "LuaHelper", typeof(LuaHelper), regs, fields, "LuaHelper");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_Index(IntPtr l)
+	static int GetType(IntPtr L)
 	{
-		if (TryLuaIndex(l))
-		{
-			return 1;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'LuaHelper' does not contain a definition for '{0}'", str));
-		return 0;
-	}
-
-	public static bool TryLuaNewIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.NewIndex(reference, str, fields))
-		{
-			return true;
-		}
-
-		return LuaHelperWrap.TryLuaNewIndex(l);
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_NewIndex(IntPtr l)
-	{
-		if (TryLuaNewIndex(l))
-		{
-			return 0;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'LuaHelper' does not contain a definition for '{0}'", str));
-		return 0;
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetType(IntPtr l)
-	{
-		luaMgr.CheckArgsCount(1);
-		string arg0 = luaMgr.GetString(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		Type o = LuaHelper.GetType(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetComponentInChildren(IntPtr l)
+	static int GetComponentInChildren(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		GameObject arg0 = (GameObject)luaMgr.GetNetObject(1);
-		string arg1 = luaMgr.GetString(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component o = LuaHelper.GetComponentInChildren(arg0,arg1);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetComponent(IntPtr l)
+	static int GetComponent(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		GameObject arg0 = (GameObject)luaMgr.GetNetObject(1);
-		string arg1 = luaMgr.GetString(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component o = LuaHelper.GetComponent(arg0,arg1);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetComponentsInChildren(IntPtr l)
+	static int GetComponentsInChildren(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		GameObject arg0 = (GameObject)luaMgr.GetNetObject(1);
-		string arg1 = luaMgr.GetString(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component[] o = LuaHelper.GetComponentsInChildren(arg0,arg1);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetAllChild(IntPtr l)
+	static int GetAllChild(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		GameObject arg0 = (GameObject)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
 		Transform[] o = LuaHelper.GetAllChild(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Action(IntPtr l)
+	static int Action(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		LuaFunction arg0 = luaMgr.GetLuaFunction(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		LuaFunction arg0 = LuaScriptMgr.GetLuaFunction(L, 1);
 		Action o = LuaHelper.Action(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int VoidDelegate(IntPtr l)
+	static int VoidDelegate(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		LuaFunction arg0 = luaMgr.GetLuaFunction(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		LuaFunction arg0 = LuaScriptMgr.GetLuaFunction(L, 1);
 		UIEventListener.VoidDelegate o = LuaHelper.VoidDelegate(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 }

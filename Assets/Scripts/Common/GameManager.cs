@@ -52,35 +52,16 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
-    /// 初始化Lua管理器
-    /// </summary>
-    public void InitLuaManager() {
-        luaMgr = new LuaScriptMgr();
-
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        Type[] types = assembly.GetTypes();
-        List<Type> wrapList = new List<Type>();
-        Type wrapType = typeof(ILuaWrap);
-
-        for (int i = 0; i < types.Length; i++) {
-            Type t = types[i];
-
-            if (wrapType.IsAssignableFrom(t) && !t.IsAbstract) {
-                wrapList.Add(t);
-            }
-        }
-        luaMgr.LuaBinding(wrapList);
-    }
-
-    /// <summary>
     /// 资源初始化结束
     /// </summary>
-    public void OnResourceInited() { 
-        InitLuaManager();
+    public void OnResourceInited() {
+        luaMgr = new LuaScriptMgr();
+        luaMgr.Start();
+
         luaMgr.DoFile("game");      //加载游戏
         luaMgr.DoFile("network");   //加载网络
 
-        object[] panels = CallMethod("LuaPanel");
+        object[] panels = CallMethod("LuaScriptPanel");
         //---------------------Lua面板---------------------------
         foreach (object o in panels) {
             string name = o.ToString().Trim();

@@ -1,13 +1,9 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
 using LuaInterface;
-using Object = UnityEngine.Object;
 
-public class ConstWrap : ILuaWrap
+public class ConstWrap
 {
-	public static LuaScriptMgr luaMgr = null;
-	public static int reference = -1;
-
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
 		new LuaMethod("New", Create),
@@ -33,266 +29,237 @@ public class ConstWrap : ILuaWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr l)
+	static int Create(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(l);
+		int count = LuaDLL.lua_gettop(L);
 		object obj = null;
 
 		if (count == 0)
 		{
 			obj = new Const();
-			luaMgr.PushResult(obj);
+			LuaScriptMgr.PushResult(L, obj);
 			return 1;
 		}
 		else
 		{
-			LuaDLL.luaL_error(l, "The best overloaded method match for 'Const.New' has some invalid arguments");
+			LuaDLL.luaL_error(L, "invalid arguments to method: Const.New");
 		}
 
 		return 0;
 	}
 
-	public void Register()
+	public static void Register(IntPtr L)
 	{
-		LuaMethod[] metas = new LuaMethod[]
-		{
-			new LuaMethod("__index", Lua_Index),
-			new LuaMethod("__newindex", Lua_NewIndex),
-		};
-
-		luaMgr = LuaScriptMgr.Instance;
-		reference = luaMgr.RegisterLib("Const", regs);
-		luaMgr.CreateMetaTable("Const", metas, typeof(Const));
-		luaMgr.RegisterField(typeof(Const), fields);
-	}
-
-	static bool get_BetaMode(IntPtr l)
-	{
-		luaMgr.PushResult(Const.BetaMode);
-		return true;
-	}
-
-	static bool get_DebugMode(IntPtr l)
-	{
-		luaMgr.PushResult(Const.DebugMode);
-		return true;
-	}
-
-	static bool get_InnerNetMode(IntPtr l)
-	{
-		luaMgr.PushResult(Const.InnerNetMode);
-		return true;
-	}
-
-	static bool get_TimerInterval(IntPtr l)
-	{
-		luaMgr.PushResult(Const.TimerInterval);
-		return true;
-	}
-
-	static bool get_GameFrameRate(IntPtr l)
-	{
-		luaMgr.PushResult(Const.GameFrameRate);
-		return true;
-	}
-
-	static bool get_luaScripts(IntPtr l)
-	{
-		luaMgr.PushResult(Const.luaScripts);
-		return true;
-	}
-
-	static bool get_UserId(IntPtr l)
-	{
-		luaMgr.PushResult(Const.UserId);
-		return true;
-	}
-
-	static bool get_AppName(IntPtr l)
-	{
-		luaMgr.PushResult(Const.AppName);
-		return true;
-	}
-
-	static bool get_AppPrefix(IntPtr l)
-	{
-		luaMgr.PushResult(Const.AppPrefix);
-		return true;
-	}
-
-	static bool get_ResDirectory(IntPtr l)
-	{
-		luaMgr.PushResult(Const.ResDirectory);
-		return true;
-	}
-
-	static bool get_WebUrl(IntPtr l)
-	{
-		luaMgr.PushResult(Const.WebUrl);
-		return true;
-	}
-
-	static bool get_SocketAddress(IntPtr l)
-	{
-		luaMgr.PushResult(Const.SocketAddress);
-		return true;
-	}
-
-	static bool get_SocketPort(IntPtr l)
-	{
-		luaMgr.PushResult(Const.SocketPort);
-		return true;
-	}
-
-	static bool get_uid(IntPtr l)
-	{
-		luaMgr.PushResult(Const.uid);
-		return true;
-	}
-
-	static bool get_sid(IntPtr l)
-	{
-		luaMgr.PushResult(Const.sid);
-		return true;
-	}
-
-	public static bool TryLuaIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.Index(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ConstWrap.TryLuaIndex(l);
+		LuaScriptMgr.RegisterLib(L, "Const", typeof(Const), regs, fields, "Const");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_Index(IntPtr l)
+	static int get_BetaMode(IntPtr L)
 	{
-		if (TryLuaIndex(l))
-		{
-			return 1;
-		}
+		LuaScriptMgr.PushResult(L, Const.BetaMode);
+		return 1;
+	}
 
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'Const' does not contain a definition for '{0}'", str));
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_DebugMode(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.DebugMode);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_InnerNetMode(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.InnerNetMode);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_TimerInterval(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.TimerInterval);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GameFrameRate(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.GameFrameRate);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_luaScripts(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.luaScripts);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_UserId(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.UserId);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_AppName(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.AppName);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_AppPrefix(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.AppPrefix);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_ResDirectory(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.ResDirectory);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_WebUrl(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.WebUrl);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_SocketAddress(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.SocketAddress);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_SocketPort(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.SocketPort);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_uid(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.uid);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_sid(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, Const.sid);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_BetaMode(IntPtr L)
+	{
+		Const.BetaMode = LuaScriptMgr.GetBoolean(L, 3);
 		return 0;
 	}
 
-	static bool set_BetaMode(IntPtr l)
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_DebugMode(IntPtr L)
 	{
-		Const.BetaMode = luaMgr.GetBoolean(3);
-		return true;
-	}
-
-	static bool set_DebugMode(IntPtr l)
-	{
-		Const.DebugMode = luaMgr.GetBoolean(3);
-		return true;
-	}
-
-	static bool set_InnerNetMode(IntPtr l)
-	{
-		Const.InnerNetMode = luaMgr.GetBoolean(3);
-		return true;
-	}
-
-	static bool set_TimerInterval(IntPtr l)
-	{
-		Const.TimerInterval = (int)luaMgr.GetNumber(3);
-		return true;
-	}
-
-	static bool set_GameFrameRate(IntPtr l)
-	{
-		Const.GameFrameRate = (int)luaMgr.GetNumber(3);
-		return true;
-	}
-
-	static bool set_luaScripts(IntPtr l)
-	{
-		Const.luaScripts = (TextAsset[])luaMgr.GetNetObject(3);
-		return true;
-	}
-
-	static bool set_UserId(IntPtr l)
-	{
-		Const.UserId = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_AppName(IntPtr l)
-	{
-		Const.AppName = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_AppPrefix(IntPtr l)
-	{
-		Const.AppPrefix = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_ResDirectory(IntPtr l)
-	{
-		Const.ResDirectory = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_WebUrl(IntPtr l)
-	{
-		Const.WebUrl = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_SocketAddress(IntPtr l)
-	{
-		Const.SocketAddress = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_SocketPort(IntPtr l)
-	{
-		Const.SocketPort = (int)luaMgr.GetNumber(3);
-		return true;
-	}
-
-	static bool set_uid(IntPtr l)
-	{
-		Const.uid = luaMgr.GetString(3);
-		return true;
-	}
-
-	static bool set_sid(IntPtr l)
-	{
-		Const.sid = luaMgr.GetString(3);
-		return true;
-	}
-
-	public static bool TryLuaNewIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.NewIndex(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ConstWrap.TryLuaNewIndex(l);
+		Const.DebugMode = LuaScriptMgr.GetBoolean(L, 3);
+		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_NewIndex(IntPtr l)
+	static int set_InnerNetMode(IntPtr L)
 	{
-		if (TryLuaNewIndex(l))
-		{
-			return 0;
-		}
+		Const.InnerNetMode = LuaScriptMgr.GetBoolean(L, 3);
+		return 0;
+	}
 
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'Const' does not contain a definition for '{0}'", str));
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_TimerInterval(IntPtr L)
+	{
+		Const.TimerInterval = (int)LuaScriptMgr.GetNumber(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_GameFrameRate(IntPtr L)
+	{
+		Const.GameFrameRate = (int)LuaScriptMgr.GetNumber(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_luaScripts(IntPtr L)
+	{
+		Const.luaScripts = (TextAsset[])LuaScriptMgr.GetNetObject(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_UserId(IntPtr L)
+	{
+		Const.UserId = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_AppName(IntPtr L)
+	{
+		Const.AppName = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_AppPrefix(IntPtr L)
+	{
+		Const.AppPrefix = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_ResDirectory(IntPtr L)
+	{
+		Const.ResDirectory = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_WebUrl(IntPtr L)
+	{
+		Const.WebUrl = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_SocketAddress(IntPtr L)
+	{
+		Const.SocketAddress = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_SocketPort(IntPtr L)
+	{
+		Const.SocketPort = (int)LuaScriptMgr.GetNumber(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_uid(IntPtr L)
+	{
+		Const.uid = LuaScriptMgr.GetString(L, 3);
+		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_sid(IntPtr L)
+	{
+		Const.sid = LuaScriptMgr.GetString(L, 3);
 		return 0;
 	}
 }

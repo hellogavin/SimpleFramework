@@ -197,7 +197,8 @@ namespace LuaInterface
             //string text = LuaHelper.Load(fileName);
 
             byte[] bt = null;
-            string path = Util.LuaPath(fileName);
+            string path = Application.dataPath + "/Resources/Lua/" + fileName + ".txt";
+
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {                            
                 BinaryReader br = new BinaryReader(fs);

@@ -1,13 +1,8 @@
 ﻿using System;
-using UnityEngine;
 using LuaInterface;
-using Object = UnityEngine.Object;
 
-public class ByteBufferWrap : ILuaWrap
+public class ByteBufferWrap
 {
-	public static LuaScriptMgr luaMgr = null;
-	public static int reference = -1;
-
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
 		new LuaMethod("Close", Close),
@@ -35,260 +30,201 @@ public class ByteBufferWrap : ILuaWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr l)
+	static int Create(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(l);
+		int count = LuaDLL.lua_gettop(L);
 		object obj = null;
 
 		if (count == 0)
 		{
 			obj = new ByteBuffer();
-			luaMgr.PushResult(obj);
+			LuaScriptMgr.PushResult(L, obj);
 			return 1;
 		}
 		else if (count == 1)
 		{
-			byte[] objs0 = luaMgr.GetArrayNumber<byte>(1);
+			byte[] objs0 = LuaScriptMgr.GetArrayNumber<byte>(L, 1);
 			obj = new ByteBuffer(objs0);
-			luaMgr.PushResult(obj);
+			LuaScriptMgr.PushResult(L, obj);
 			return 1;
 		}
 		else
 		{
-			LuaDLL.luaL_error(l, "The best overloaded method match for 'ByteBuffer.New' has some invalid arguments");
+			LuaDLL.luaL_error(L, "invalid arguments to method: ByteBuffer.New");
 		}
 
 		return 0;
 	}
 
-	public void Register()
+	public static void Register(IntPtr L)
 	{
-		LuaMethod[] metas = new LuaMethod[]
-		{
-			new LuaMethod("__index", Lua_Index),
-			new LuaMethod("__newindex", Lua_NewIndex),
-		};
-
-		luaMgr = LuaScriptMgr.Instance;
-		reference = luaMgr.RegisterLib("ByteBuffer", regs);
-		luaMgr.CreateMetaTable("ByteBuffer", metas, typeof(ByteBuffer));
-		luaMgr.RegisterField(typeof(ByteBuffer), fields);
-	}
-
-	public static bool TryLuaIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.Index(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ByteBufferWrap.TryLuaIndex(l);
+		LuaScriptMgr.RegisterLib(L, "ByteBuffer", typeof(ByteBuffer), regs, fields, "ByteBuffer");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_Index(IntPtr l)
+	static int Close(IntPtr L)
 	{
-		if (TryLuaIndex(l))
-		{
-			return 1;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'ByteBuffer' does not contain a definition for '{0}'", str));
-		return 0;
-	}
-
-	public static bool TryLuaNewIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.NewIndex(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ByteBufferWrap.TryLuaNewIndex(l);
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_NewIndex(IntPtr l)
-	{
-		if (TryLuaNewIndex(l))
-		{
-			return 0;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'ByteBuffer' does not contain a definition for '{0}'", str));
-		return 0;
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Close(IntPtr l)
-	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		obj.Close();
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteByte(IntPtr l)
+	static int WriteByte(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		int arg0 = (int)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		int arg0 = (int)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteByte(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteInt(IntPtr l)
+	static int WriteInt(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		int arg0 = (int)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		int arg0 = (int)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteInt(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteShort(IntPtr l)
+	static int WriteShort(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		ushort arg0 = (ushort)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ushort arg0 = (ushort)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteShort(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteLong(IntPtr l)
+	static int WriteLong(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		long arg0 = (long)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		long arg0 = (long)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteLong(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteFloat(IntPtr l)
+	static int WriteFloat(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		float arg0 = (float)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		float arg0 = (float)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteFloat(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteDouble(IntPtr l)
+	static int WriteDouble(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		double arg0 = (double)luaMgr.GetNumber(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		double arg0 = (double)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteDouble(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int WriteString(IntPtr l)
+	static int WriteString(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
-		string arg0 = luaMgr.GetString(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 		obj.WriteString(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadByte(IntPtr l)
+	static int ReadByte(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		int o = obj.ReadByte();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadInt(IntPtr l)
+	static int ReadInt(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		int o = obj.ReadInt();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadShort(IntPtr l)
+	static int ReadShort(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		ushort o = obj.ReadShort();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadLong(IntPtr l)
+	static int ReadLong(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		long o = obj.ReadLong();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadFloat(IntPtr l)
+	static int ReadFloat(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		float o = obj.ReadFloat();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadDouble(IntPtr l)
+	static int ReadDouble(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		double o = obj.ReadDouble();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ReadString(IntPtr l)
+	static int ReadString(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		string o = obj.ReadString();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ToBytes(IntPtr l)
+	static int ToBytes(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		byte[] o = obj.ToBytes();
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Flush(IntPtr l)
+	static int Flush(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		ByteBuffer obj = (ByteBuffer)luaMgr.GetNetObject(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
 		obj.Flush();
 		return 0;
 	}

@@ -1,13 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using LuaInterface;
-using Object = UnityEngine.Object;
 
-public class ioWrap : ILuaWrap
+public class ioWrap
 {
-	public static LuaScriptMgr luaMgr = null;
-	public static int reference = -1;
-
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
 		new LuaMethod("f", f),
@@ -33,187 +29,137 @@ public class ioWrap : ILuaWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr l)
+	static int Create(IntPtr L)
 	{
-		LuaDLL.luaL_error(l, "io class does not have a constructor function");
+		LuaDLL.luaL_error(L, "io class does not have a constructor function");
 		return 0;
 	}
 
-	public void Register()
+	public static void Register(IntPtr L)
 	{
-		LuaMethod[] metas = new LuaMethod[]
-		{
-			new LuaMethod("__index", Lua_Index),
-			new LuaMethod("__newindex", Lua_NewIndex),
-		};
-
-		luaMgr = LuaScriptMgr.Instance;
-		reference = luaMgr.RegisterLib("io", regs);
-		luaMgr.CreateMetaTable("io", metas, typeof(io));
-		luaMgr.RegisterField(typeof(io), fields);
-	}
-
-	static bool get_manager(IntPtr l)
-	{
-		luaMgr.PushResult(io.manager);
-		return true;
-	}
-
-	static bool get_gameManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.gameManager);
-		return true;
-	}
-
-	static bool get_panelManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.panelManager);
-		return true;
-	}
-
-	static bool get_resourceManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.resourceManager);
-		return true;
-	}
-
-	static bool get_timerManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.timerManager);
-		return true;
-	}
-
-	static bool get_musicManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.musicManager);
-		return true;
-	}
-
-	static bool get_networkManager(IntPtr l)
-	{
-		luaMgr.PushResult(io.networkManager);
-		return true;
-	}
-
-	static bool get_MainUI(IntPtr l)
-	{
-		luaMgr.PushResult(io.MainUI);
-		return true;
-	}
-
-	static bool get_guiCamera(IntPtr l)
-	{
-		luaMgr.PushResult(io.guiCamera);
-		return true;
-	}
-
-	public static bool TryLuaIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.Index(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ioWrap.TryLuaIndex(l);
+		LuaScriptMgr.RegisterLib(L, "io", typeof(io), regs, fields, "io");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_Index(IntPtr l)
+	static int get_manager(IntPtr L)
 	{
-		if (TryLuaIndex(l))
-		{
-			return 1;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'io' does not contain a definition for '{0}'", str));
-		return 0;
-	}
-
-	public static bool TryLuaNewIndex(IntPtr l)
-	{
-		string str = luaMgr.GetString(2);
-
-		if (luaMgr.NewIndex(reference, str, fields))
-		{
-			return true;
-		}
-
-		return ioWrap.TryLuaNewIndex(l);
+		LuaScriptMgr.PushResult(L, io.manager);
+		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Lua_NewIndex(IntPtr l)
+	static int get_gameManager(IntPtr L)
 	{
-		if (TryLuaNewIndex(l))
-		{
-			return 0;
-		}
-
-		string str = luaMgr.GetString(2);
-		LuaDLL.luaL_error(l, string.Format("'io' does not contain a definition for '{0}'", str));
-		return 0;
+		LuaScriptMgr.PushResult(L, io.gameManager);
+		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int f(IntPtr l)
+	static int get_panelManager(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(l);
-		string arg0 = luaMgr.GetString(1);
-		object[] objs1 = luaMgr.GetParamsObject<object>(2, count - 1);
+		LuaScriptMgr.PushResult(L, io.panelManager);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_resourceManager(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.resourceManager);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_timerManager(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.timerManager);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_musicManager(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.musicManager);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_networkManager(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.networkManager);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_MainUI(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.MainUI);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_guiCamera(IntPtr L)
+	{
+		LuaScriptMgr.PushResult(L, io.guiCamera);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int f(IntPtr L)
+	{
+		int count = LuaDLL.lua_gettop(L);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
+		object[] objs1 = LuaScriptMgr.GetParamsObject(L, 2, count - 1);
 		string o = io.f(arg0,objs1);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int c(IntPtr l)
+	static int c(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(l);
-		object[] objs0 = luaMgr.GetParamsObject<object>(1, count - 0);
+		int count = LuaDLL.lua_gettop(L);
+		object[] objs0 = LuaScriptMgr.GetParamsObject(L, 1, count);
 		string o = io.c(objs0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddPrefab(IntPtr l)
+	static int AddPrefab(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(2);
-		string arg0 = luaMgr.GetString(1);
-		GameObject arg1 = (GameObject)luaMgr.GetNetObject(2);
+		LuaScriptMgr.CheckArgsCount(L, 2);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
+		GameObject arg1 = (GameObject)LuaScriptMgr.GetNetObject(L, 2);
 		io.AddPrefab(arg0,arg1);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetPrefab(IntPtr l)
+	static int GetPrefab(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		string arg0 = luaMgr.GetString(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject o = io.GetPrefab(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int RemovePrefab(IntPtr l)
+	static int RemovePrefab(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		string arg0 = luaMgr.GetString(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		io.RemovePrefab(arg0);
 		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadPrefab(IntPtr l)
+	static int LoadPrefab(IntPtr L)
 	{
-		luaMgr.CheckArgsCount(1);
-		string arg0 = luaMgr.GetString(1);
+		LuaScriptMgr.CheckArgsCount(L, 1);
+		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject o = io.LoadPrefab(arg0);
-		luaMgr.PushResult(o);
+		LuaScriptMgr.PushResult(L, o);
 		return 1;
 	}
 }
