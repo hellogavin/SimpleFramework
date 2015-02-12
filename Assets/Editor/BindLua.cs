@@ -224,7 +224,6 @@ public static class LuaBinding
 		_GT(typeof(Hashtable)),
 
         //系统自带
-        /*
         _GT(typeof(Vector2)),
         _GT(typeof(Vector3)),
         _GT(typeof(GameObject)),
@@ -234,7 +233,6 @@ public static class LuaBinding
         _GT(typeof(MonoBehaviour)),
         _GT(typeof(Time)),
         _GT(typeof(Application)),
-         */
     };
 
     [MenuItem("Lua/Gen Lua Wrap Files", false, 11)]
@@ -272,6 +270,7 @@ public static class LuaBinding
         {
             sb1.AppendFormat("\t\t{0}Wrap.Register(L);\r\n", binds[i].wrapName);
         }
+        GenLuaBinder();
         Debug.Log("Generate lua binding files over");
         Debug.Log(sb1.ToString());
         AssetDatabase.Refresh();

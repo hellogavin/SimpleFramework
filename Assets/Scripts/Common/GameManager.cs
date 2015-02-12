@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using LuaInterface;
 using System.Reflection;
+using System.IO;
 
 public class GameManager : BaseLua {
     public LuaScriptMgr luaMgr;
+    private string message;
 
     /// <summary>
     /// 初始化游戏管理器
@@ -20,8 +22,15 @@ public class GameManager : BaseLua {
     /// </summary>
     void Init() {
         InitGui();
-        InitManagers();
         DontDestroyOnLoad(gameObject);  //防止销毁自己
+
+        Util.Add<PanelManager>(gameObject);
+        Util.Add<MusicManager>(gameObject);
+        Util.Add<TimerManager>(gameObject);
+        Util.Add<SocketClient>(gameObject);
+        Util.Add<NetworkManager>(gameObject);
+
+        CheckExtractResource(); //释放资源
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = Const.GameFrameRate;
     }
@@ -40,15 +49,74 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
-    /// 初始化管理器
+    /// 释放资源
     /// </summary>
-    public void InitManagers() {
-        Util.Add<PanelManager>(gameObject);
-        Util.Add<MusicManager>(gameObject);
-        Util.Add<TimerManager>(gameObject);
-        Util.Add<SocketClient>(gameObject);
-        Util.Add<NetworkManager>(gameObject);
+    public void CheckExtractResource() {
+        bool isExists = Directory.Exists(Util.DataPath) &&
+          Directory.Exists(Util.DataPath + "lua/") && File.Exists(Util.DataPath + "files.txt");
+        if (isExists || Const.DebugMode) {
+            Util.Add<ResourceManager>(gameObject);
+            return;   //文件已经解压过了，自己可添加检查文件列表逻辑
+        }
+        StartCoroutine(OnExtractResource());    //启动释放协成 
+    }
+
+    IEnumerator OnExtractResource() {
+        string dataPath = Util.DataPath;  //数据目录
+        string resPath = Util.AppContentPath(); //游戏包资源目录
+
+        if (Directory.Exists(dataPath)) Directory.Delete(dataPath);
+        Directory.CreateDirectory(dataPath);
+
+        string infile = resPath + "/files.txt";
+        string outfile = dataPath + "files.txt";
+        if (File.Exists(outfile)) File.Delete(outfile);
+
+        message = "正在解包文件:>files.txt";
+        Debug.Log(message);
+        if (Application.platform == RuntimePlatform.Android) {
+            WWW www = new WWW(infile);
+            yield return www;
+
+            if (www.isDone) {
+                File.WriteAllBytes(outfile, www.bytes);
+            }
+            yield return 0;
+        } else File.Copy(infile, outfile, true);
+        yield return new WaitForEndOfFrame();
+
+        //释放所有文件到数据目录
+        string[] files = File.ReadAllLines(outfile);
+        foreach (var file in files) {
+            infile = resPath + file;  //
+            outfile = dataPath + file;
+            message = "正在解包文件:>" + file;
+            Debug.Log("正在解包文件:>" + infile);
+
+            string dir = Path.GetDirectoryName(outfile);
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            if (Application.platform == RuntimePlatform.Android) {
+                WWW www = new WWW(infile);
+                yield return www;
+
+                if (www.isDone) {
+                    File.WriteAllBytes(outfile, www.bytes);
+                }
+                yield return 0;
+            } else File.Copy(infile, outfile, true);
+            yield return new WaitForEndOfFrame();
+        }
+        message = "解包完成!!!";
+        yield return new WaitForSeconds(0.1f);
+        message = string.Empty;
+
+        //释放完成，开始启动资源管理器(此处可添加更新代码)
         Util.Add<ResourceManager>(gameObject);
+    }
+
+    void OnGUI() {
+        GUI.Label(new Rect(10, 120, 960, 50), message);
     }
 
     /// <summary>

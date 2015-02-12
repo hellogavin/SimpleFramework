@@ -45,7 +45,7 @@ public class Packager {
         } else {
             target = BuildTarget.Android;
         }
-        string assetPath = Application.dataPath + "/StreamingAssets/asset/" + target + "/";
+        string assetPath = (Application.dataPath + "/StreamingAssets/" + target + "/").ToLower();
         if (!Directory.Exists(assetPath)) Directory.CreateDirectory(assetPath);
 
         ///-----------------------------生成共享的关联性素材绑定-------------------------------------
@@ -73,6 +73,61 @@ public class Packager {
 
         ///-------------------------------刷新---------------------------------------
         BuildPipeline.PopAssetDependencies();
+
+        HandleLuaFile();
+        AssetDatabase.Refresh();
+    }
+
+    /// <summary>
+    /// 处理Lua文件
+    /// </summary>
+    static void HandleLuaFile() {
+        BuildTarget target;
+        if (Application.platform == RuntimePlatform.OSXEditor) {
+            target = BuildTarget.iPhone;
+        } else {
+            target = BuildTarget.Android;
+        }
+        string resPath = (Application.dataPath + "/StreamingAssets/" + target).ToLower();
+        string luaPath = resPath + "/lua/";
+
+        //----------复制Lua文件----------------
+        if (Directory.Exists(luaPath)) {
+            Directory.Delete(luaPath, true);
+        }
+        Directory.CreateDirectory(luaPath);
+
+        paths.Clear(); files.Clear();
+        string luaDataPath = Application.dataPath + "/lua/".ToLower();
+        Recursive(luaDataPath);
+        foreach (string f in files) {
+            if (!f.EndsWith(".lua")) continue;
+            string newfile = f.Replace(luaDataPath, "");
+            string newpath = luaPath + newfile;
+            string path = Path.GetDirectoryName(newpath);
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            File.Copy(f, newpath, true);
+        }
+
+        ///----------------------创建文件列表-----------------------
+        string newFilePath = resPath + "/files.txt";
+        if (File.Exists(newFilePath)) File.Delete(newFilePath);
+
+        paths.Clear(); files.Clear();
+        Recursive(resPath);
+
+        FileStream fs = new FileStream(newFilePath, FileMode.CreateNew);
+        StreamWriter sw = new StreamWriter(fs);
+        for (int i = 0; i < files.Count; i++) {
+            string file = files[i];
+            string ext = Path.GetExtension(file);
+            if (!CanCopy(ext)) continue;
+
+            string value = file.Replace(resPath, string.Empty); 
+            sw.WriteLine(value);
+        }
+        sw.Close(); fs.Close();
+
         AssetDatabase.Refresh();
     }
 

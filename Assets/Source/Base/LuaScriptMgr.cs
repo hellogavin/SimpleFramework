@@ -327,7 +327,7 @@ public class LuaScriptMgr
 
     public byte[] Loader(string name)
     {
-        //byte[] str = null;        
+        byte[] str = null;        
 #if !LUA_ZIP
         string path = Util.LuaPath(name);    
         /* modify by jarjin
@@ -338,13 +338,14 @@ public class LuaScriptMgr
             file.Close();        
         } 
         */
+        str = File.ReadAllBytes(path);
 #else
         TextAsset luaCode = file.Read<TextAsset>(name);
         str = luaCode.bytes;
         Resources.UnloadAsset(luaCode);
 #endif
         fileList.Add(name);
-        return File.ReadAllBytes(path);
+        return str;
     }
 
     static bool PushLuaTable(IntPtr L, string fullPath)

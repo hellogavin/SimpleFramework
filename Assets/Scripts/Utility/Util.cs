@@ -370,35 +370,12 @@ public class Util : MonoBehaviour {
     }
 
     /// <summary>
-    /// 取得App包里面的读取目录
-    /// </summary>
-    public static Uri AppContentDataUri {
-        get {
-            string dataPath = Application.dataPath;
-            if (Application.platform == RuntimePlatform.IPhonePlayer) {
-                var uriBuilder = new UriBuilder();
-                uriBuilder.Scheme = "file";
-                uriBuilder.Path = Path.Combine(dataPath, "Raw");
-                return uriBuilder.Uri;
-            } else if (Application.platform == RuntimePlatform.Android) {
-                return new Uri("jar:file://" + dataPath + "!/assets");
-            } else {
-                var uriBuilder = new UriBuilder();
-                uriBuilder.Scheme = "file";
-                uriBuilder.Path = Path.Combine(dataPath, "StreamingAssets");
-                return uriBuilder.Uri;
-            }
-        }
-    }
-
-    /// <summary>
     /// 取得数据存放目录
     /// </summary>
     public static string DataPath {
         get {
             string game = Const.AppName.ToLower();
             string dataPath = Application.dataPath;
-            if (Const.DebugMode) AppContentDataUri.ToString();
 
             if (Application.platform == RuntimePlatform.IPhonePlayer) {
                 string path = Path.GetDirectoryName(Path.GetDirectoryName(dataPath));
@@ -406,7 +383,18 @@ public class Util : MonoBehaviour {
             } else if (Application.platform == RuntimePlatform.Android) {
                 return "/sdcard/" + game + "/";
             }
-            return dataPath + "/StreamingAssets/";
+            if (Const.DebugMode) {
+                string target = string.Empty;
+                if (Application.platform == RuntimePlatform.OSXEditor ||
+                    Application.platform == RuntimePlatform.IPhonePlayer ||
+                    Application.platform == RuntimePlatform.OSXEditor) {
+                    target = "iphone";
+                } else {
+                    target = "android";
+                }
+                return dataPath + "/StreamingAssets/" + target + "/";
+            }
+            return "c:/" + game + "/";
         }
     }
 
@@ -436,34 +424,19 @@ public class Util : MonoBehaviour {
     }
 
     /// <summary>
-    /// 取得数据存放目录
-    /// </summary>
-    public static string GetDataDir() {
-        string dataPath = Application.dataPath;
-        if (Application.platform == RuntimePlatform.IPhonePlayer) {
-            string path = Path.GetDirectoryName(Path.GetDirectoryName(dataPath));
-            return Path.Combine(path, "Documents/testgame/");
-        } else if (Application.platform == RuntimePlatform.Android) {
-            return "/sdcard/testgame/";
-        }
-        if (Const.DebugMode) return dataPath;
-        return "c:/";
-    }
-
-    /// <summary>
     /// 应用程序内容路径
     /// </summary>
     public static string AppContentPath() {
         string path = string.Empty;
         switch (Application.platform) {
             case RuntimePlatform.Android:
-                path = "jar:file://" + Application.dataPath + "!/assets/";
+                path = "jar:file://" + Application.dataPath + "!/assets/android";
             break;
             case RuntimePlatform.IPhonePlayer:
-                path = Application.dataPath + "/Raw/";
+                path = Application.dataPath + "/Raw/iphone";
             break;
             default:
-                path = "file://" + Application.dataPath + "/StreamingAssets/";
+                path = Application.dataPath + "/StreamingAssets/android";
             break;
         }
         return path;
@@ -505,9 +478,9 @@ public class Util : MonoBehaviour {
     /// </summary>
     public static string LuaPath(string name) {
         if (name.EndsWith(".lua")) {
-            return Application.dataPath + "/lua/" + name;
+            return DataPath + "/lua/" + name;
         }
-        return Application.dataPath + "/lua/" + name + ".lua";
+        return DataPath + "/lua/" + name + ".lua";
     }
 
     public static void Log(string str) {
@@ -519,6 +492,6 @@ public class Util : MonoBehaviour {
     }
 
     public static void LogError(string str) {
-        Debug.LogError(str);
+        Debug.LogError(str); 
     }  
 }

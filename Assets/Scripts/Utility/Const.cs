@@ -4,9 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Const {   
-    public static bool BetaMode = false;                        //封测模式-用于标示支付
-    public static bool DebugMode = true;                        //调试模式-用于内部测试
-    public static bool InnerNetMode = true;                     //内网模式-使用内网模式
+    public static bool DebugMode = false;                        //调试模式-用于内部测试
 
     public static int TimerInterval = 1;
     public static int GameFrameRate = 30;                       //游戏帧频

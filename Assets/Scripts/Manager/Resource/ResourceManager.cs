@@ -5,20 +5,6 @@ using System.IO;
 public class ResourceManager : MonoBehaviour {
     private AssetBundle shared;
 
-    string AssetPath {
-        get {
-            string target = string.Empty;
-            if (Application.platform == RuntimePlatform.OSXEditor ||
-                Application.platform == RuntimePlatform.IPhonePlayer ||
-                Application.platform == RuntimePlatform.OSXEditor) {
-                target = "iphone";
-            } else {
-                target = "android";
-            }
-            return Util.GetDataDir() + "/StreamingAssets/asset/" + target + "/";
-        }
-    }
-
     void Awake() {
         initialize();
     }
@@ -30,7 +16,7 @@ public class ResourceManager : MonoBehaviour {
         byte[] stream;
         string uri = string.Empty;
         //------------------------------------Shared--------------------------------------
-        uri = AssetPath + "shared.assetbundle";
+        uri = Util.DataPath + "shared.assetbundle";
         Debug.LogWarning("LoadFile::>> " + uri);
 
         stream = File.ReadAllBytes(uri);
@@ -46,7 +32,7 @@ public class ResourceManager : MonoBehaviour {
     public AssetBundle LoadBundle(string name) {
         byte[] stream = null;
         AssetBundle bundle = null;
-        string uri = AssetPath + name.ToLower() + ".assetbundle";
+        string uri = Util.DataPath + name.ToLower() + ".assetbundle";
         stream = File.ReadAllBytes(uri);
         bundle = AssetBundle.CreateFromMemoryImmediate(stream); //关联数据的素材绑定
         return bundle;
