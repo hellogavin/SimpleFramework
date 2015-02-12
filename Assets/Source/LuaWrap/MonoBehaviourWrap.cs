@@ -16,7 +16,8 @@ public class MonoBehaviourWrap
 		new LuaMethod("StopCoroutine", StopCoroutine),
 		new LuaMethod("StopAllCoroutines", StopAllCoroutines),
 		new LuaMethod("print", print),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateMonoBehaviour),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -25,15 +26,14 @@ public class MonoBehaviourWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateMonoBehaviour(IntPtr L)
 	{
 		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
 
 		if (count == 0)
 		{
-			obj = new MonoBehaviour();
-			LuaScriptMgr.PushResult(L, obj);
+			MonoBehaviour obj = new MonoBehaviour();
+			LuaScriptMgr.Push(L, obj);
 			return 1;
 		}
 		else
@@ -44,9 +44,16 @@ public class MonoBehaviourWrap
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(MonoBehaviour));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "MonoBehaviour", typeof(MonoBehaviour), regs, fields, "Behaviour");
+		LuaScriptMgr.RegisterLib(L, "UnityEngine.MonoBehaviour", typeof(MonoBehaviour), regs, fields, "UnityEngine.Behaviour");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -56,11 +63,20 @@ public class MonoBehaviourWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name useGUILayout");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name useGUILayout");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index useGUILayout on a nil value");
+			}
 		}
 
 		MonoBehaviour obj = (MonoBehaviour)o;
-		LuaScriptMgr.PushResult(L, obj.useGUILayout);
+		LuaScriptMgr.Push(L, obj.useGUILayout);
 		return 1;
 	}
 
@@ -71,7 +87,16 @@ public class MonoBehaviourWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name useGUILayout");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name useGUILayout");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index useGUILayout on a nil value");
+			}
 		}
 
 		MonoBehaviour obj = (MonoBehaviour)o;
@@ -83,7 +108,7 @@ public class MonoBehaviourWrap
 	static int Invoke(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 3);
-		MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+		MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 		float arg1 = (float)LuaScriptMgr.GetNumber(L, 3);
 		obj.Invoke(arg0,arg1);
@@ -94,7 +119,7 @@ public class MonoBehaviourWrap
 	static int InvokeRepeating(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 4);
-		MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+		MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 		float arg1 = (float)LuaScriptMgr.GetNumber(L, 3);
 		float arg2 = (float)LuaScriptMgr.GetNumber(L, 4);
@@ -109,13 +134,13 @@ public class MonoBehaviourWrap
 
 		if (count == 1)
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			obj.CancelInvoke();
 			return 0;
 		}
 		else if (count == 2)
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			obj.CancelInvoke(arg0);
 			return 0;
@@ -135,17 +160,17 @@ public class MonoBehaviourWrap
 
 		if (count == 1)
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			bool o = obj.IsInvoking();
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2)
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			bool o = obj.IsInvoking(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -166,27 +191,27 @@ public class MonoBehaviourWrap
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			Coroutine o = obj.StartCoroutine(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushObject(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
-			IEnumerator arg0 = (IEnumerator)LuaScriptMgr.GetNetObject(L, 2);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
+			IEnumerator arg0 = LuaScriptMgr.GetNetObject<IEnumerator>(L, 2);
 			Coroutine o = obj.StartCoroutine(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushObject(L, o);
 			return 1;
 		}
 		else if (count == 3)
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
 			Coroutine o = obj.StartCoroutine(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushObject(L, o);
 			return 1;
 		}
 		else
@@ -201,10 +226,10 @@ public class MonoBehaviourWrap
 	static int StartCoroutine_Auto(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
-		IEnumerator arg0 = (IEnumerator)LuaScriptMgr.GetNetObject(L, 2);
+		MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
+		IEnumerator arg0 = LuaScriptMgr.GetNetObject<IEnumerator>(L, 2);
 		Coroutine o = obj.StartCoroutine_Auto(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushObject(L, o);
 		return 1;
 	}
 
@@ -213,19 +238,27 @@ public class MonoBehaviourWrap
 	{
 		int count = LuaDLL.lua_gettop(L);
 
-		Type[] types0 = {typeof(MonoBehaviour), typeof(IEnumerator)};
-		Type[] types1 = {typeof(MonoBehaviour), typeof(string)};
+		Type[] types0 = {typeof(MonoBehaviour), typeof(Coroutine)};
+		Type[] types1 = {typeof(MonoBehaviour), typeof(IEnumerator)};
+		Type[] types2 = {typeof(MonoBehaviour), typeof(string)};
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
-			IEnumerator arg0 = (IEnumerator)LuaScriptMgr.GetNetObject(L, 2);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
+			Coroutine arg0 = LuaScriptMgr.GetNetObject<Coroutine>(L, 2);
 			obj.StopCoroutine(arg0);
 			return 0;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
+			IEnumerator arg0 = LuaScriptMgr.GetNetObject<IEnumerator>(L, 2);
+			obj.StopCoroutine(arg0);
+			return 0;
+		}
+		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types2, 1))
+		{
+			MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			obj.StopCoroutine(arg0);
 			return 0;
@@ -242,7 +275,7 @@ public class MonoBehaviourWrap
 	static int StopAllCoroutines(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		MonoBehaviour obj = (MonoBehaviour)LuaScriptMgr.GetNetObject(L, 1);
+		MonoBehaviour obj = LuaScriptMgr.GetNetObject<MonoBehaviour>(L, 1);
 		obj.StopAllCoroutines();
 		return 0;
 	}

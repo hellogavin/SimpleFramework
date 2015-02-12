@@ -33,7 +33,7 @@ end
 
 --创建面板--
 function createPanel(name)
-	io.panelManager:CreatePanel(name);
+	ioo.panelManager:CreatePanel(name);
 end
 
 function child(str)

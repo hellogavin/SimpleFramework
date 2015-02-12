@@ -12,7 +12,7 @@ public class GlobalGenerator : MonoBehaviour {
     }
 
     void Start() {
-        io.gameManager.OnInitScene();
+        ioo.gameManager.OnInitScene();
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class GlobalGenerator : MonoBehaviour {
         string name = "GameManager";
         GameObject manager = GameObject.Find(name);
         if (manager == null) {
-            GameObject prefab = io.LoadPrefab(name);
+            GameObject prefab = ioo.LoadPrefab(name);
             manager = Instantiate(prefab) as GameObject;
             manager.name = name;
         }

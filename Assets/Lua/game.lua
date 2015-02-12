@@ -1,5 +1,7 @@
 module("GameManager", package.seeall)
 
+require "Class"
+require "define"
 require "functions"
 
 --管理器--
@@ -25,7 +27,10 @@ function OnInitOK()
 
     Const.SocketPort = 2012;
     Const.SocketAddress = "127.0.0.1";
-    io.networkManager:SendConnect();
+    ioo.networkManager:SendConnect();
+
+    --测试lua类--
+    Class:New(10, 20):test();
 end
 
 --销毁--

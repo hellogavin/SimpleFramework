@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using LuaInterface;
+using Object = UnityEngine.Object;
 
 public class UtilWrap
 {
@@ -43,7 +44,8 @@ public class UtilWrap
 		new LuaMethod("Log", Log),
 		new LuaMethod("LogWarning", LogWarning),
 		new LuaMethod("LogError", LogError),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateUtil),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -58,76 +60,70 @@ public class UtilWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateUtil(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
-
-		if (count == 0)
-		{
-			obj = new Util();
-			LuaScriptMgr.PushResult(L, obj);
-			return 1;
-		}
-		else
-		{
-			LuaDLL.luaL_error(L, "invalid arguments to method: Util.New");
-		}
-
+		LuaDLL.luaL_error(L, "Util class does not have a constructor function");
 		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(Util));
+		return 1;
 	}
 
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "Util", typeof(Util), regs, fields, "Util");
+		LuaScriptMgr.RegisterLib(L, "Util", typeof(Util), regs, fields, "UnityEngine.MonoBehaviour");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_AppContentDataUri(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.AppContentDataUri);
+		LuaScriptMgr.PushObject(L, Util.AppContentDataUri);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_DataPath(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.DataPath);
+		LuaScriptMgr.Push(L, Util.DataPath);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_NetAvailable(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.NetAvailable);
+		LuaScriptMgr.Push(L, Util.NetAvailable);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_IsWifi(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.IsWifi);
+		LuaScriptMgr.Push(L, Util.IsWifi);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_isLogin(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.isLogin);
+		LuaScriptMgr.Push(L, Util.isLogin);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_isMain(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.isMain);
+		LuaScriptMgr.Push(L, Util.isMain);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_isFight(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Util.isFight);
+		LuaScriptMgr.Push(L, Util.isFight);
 		return 1;
 	}
 
@@ -137,7 +133,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		object arg0 = LuaScriptMgr.GetVarObject(L, 1);
 		int o = Util.Int(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -147,7 +143,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		object arg0 = LuaScriptMgr.GetVarObject(L, 1);
 		float o = Util.Float(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -157,7 +153,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		object arg0 = LuaScriptMgr.GetVarObject(L, 1);
 		long o = Util.Long(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -174,7 +170,7 @@ public class UtilWrap
 			float arg0 = (float)LuaScriptMgr.GetNumber(L, 1);
 			float arg1 = (float)LuaScriptMgr.GetNumber(L, 2);
 			float o = Util.Random(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
@@ -182,7 +178,7 @@ public class UtilWrap
 			int arg0 = (int)LuaScriptMgr.GetNumber(L, 1);
 			int arg1 = (int)LuaScriptMgr.GetNumber(L, 2);
 			int o = Util.Random(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -199,7 +195,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.Uid(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -208,7 +204,7 @@ public class UtilWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 0);
 		long o = Util.GetTime();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -222,18 +218,18 @@ public class UtilWrap
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			Transform arg0 = (Transform)LuaScriptMgr.GetNetObject(L, 1);
+			Transform arg0 = LuaScriptMgr.GetNetObject<Transform>(L, 1);
 			string arg1 = LuaScriptMgr.GetString(L, 2);
 			GameObject o = Util.Child(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg1 = LuaScriptMgr.GetString(L, 2);
 			GameObject o = Util.Child(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -254,18 +250,18 @@ public class UtilWrap
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			Transform arg0 = (Transform)LuaScriptMgr.GetNetObject(L, 1);
+			Transform arg0 = LuaScriptMgr.GetNetObject<Transform>(L, 1);
 			string arg1 = LuaScriptMgr.GetString(L, 2);
 			GameObject o = Util.Peer(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg1 = LuaScriptMgr.GetString(L, 2);
 			GameObject o = Util.Peer(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -290,7 +286,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.Encode(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -300,7 +296,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.Decode(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -310,7 +306,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		bool o = Util.IsNumeric(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -320,7 +316,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.HashToMD5Hex(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -330,7 +326,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.md5(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -340,7 +336,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.md5file(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -360,7 +356,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.DecompressFile(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -370,7 +366,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.Compress(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -380,7 +376,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.Decompress(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -388,7 +384,7 @@ public class UtilWrap
 	static int ClearChild(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		Transform arg0 = (Transform)LuaScriptMgr.GetNetObject(L, 1);
+		Transform arg0 = LuaScriptMgr.GetNetObject<Transform>(L, 1);
 		Util.ClearChild(arg0);
 		return 0;
 	}
@@ -399,7 +395,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.GetKey(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -409,7 +405,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		int o = Util.GetInt(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -419,7 +415,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		bool o = Util.HasKey(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -439,7 +435,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.GetString(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -476,7 +472,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		bool o = Util.IsNumber(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -486,7 +482,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.GetFileText(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -495,7 +491,7 @@ public class UtilWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 0);
 		string o = Util.GetDataDir();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -504,7 +500,7 @@ public class UtilWrap
 	{
 		LuaScriptMgr.CheckArgsCount(L, 0);
 		string o = Util.AppContentPath();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -512,7 +508,7 @@ public class UtilWrap
 	static int AddClick(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		object arg1 = LuaScriptMgr.GetVarObject(L, 2);
 		Util.AddClick(arg0,arg1);
 		return 0;
@@ -524,7 +520,7 @@ public class UtilWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		string o = Util.LuaPath(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 

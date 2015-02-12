@@ -6,7 +6,8 @@ public class BehaviourWrap
 {
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateBehaviour),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -15,15 +16,14 @@ public class BehaviourWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateBehaviour(IntPtr L)
 	{
 		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
 
 		if (count == 0)
 		{
-			obj = new Behaviour();
-			LuaScriptMgr.PushResult(L, obj);
+			Behaviour obj = new Behaviour();
+			LuaScriptMgr.Push(L, obj);
 			return 1;
 		}
 		else
@@ -34,9 +34,16 @@ public class BehaviourWrap
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(Behaviour));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "Behaviour", typeof(Behaviour), regs, fields, "Component");
+		LuaScriptMgr.RegisterLib(L, "UnityEngine.Behaviour", typeof(Behaviour), regs, fields, "UnityEngine.Component");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -46,11 +53,20 @@ public class BehaviourWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name enabled");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name enabled");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index enabled on a nil value");
+			}
 		}
 
 		Behaviour obj = (Behaviour)o;
-		LuaScriptMgr.PushResult(L, obj.enabled);
+		LuaScriptMgr.Push(L, obj.enabled);
 		return 1;
 	}
 
@@ -61,7 +77,16 @@ public class BehaviourWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name enabled");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name enabled");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index enabled on a nil value");
+			}
 		}
 
 		Behaviour obj = (Behaviour)o;

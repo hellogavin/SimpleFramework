@@ -6,7 +6,8 @@ public class ConstWrap
 {
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateConst),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -29,15 +30,14 @@ public class ConstWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateConst(IntPtr L)
 	{
 		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
 
 		if (count == 0)
 		{
-			obj = new Const();
-			LuaScriptMgr.PushResult(L, obj);
+			Const obj = new Const();
+			LuaScriptMgr.PushObject(L, obj);
 			return 1;
 		}
 		else
@@ -48,113 +48,120 @@ public class ConstWrap
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(Const));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "Const", typeof(Const), regs, fields, "Const");
+		LuaScriptMgr.RegisterLib(L, "Const", typeof(Const), regs, fields, "System.Object");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_BetaMode(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.BetaMode);
+		LuaScriptMgr.Push(L, Const.BetaMode);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_DebugMode(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.DebugMode);
+		LuaScriptMgr.Push(L, Const.DebugMode);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_InnerNetMode(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.InnerNetMode);
+		LuaScriptMgr.Push(L, Const.InnerNetMode);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_TimerInterval(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.TimerInterval);
+		LuaScriptMgr.Push(L, Const.TimerInterval);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_GameFrameRate(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.GameFrameRate);
+		LuaScriptMgr.Push(L, Const.GameFrameRate);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_luaScripts(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.luaScripts);
+		LuaScriptMgr.PushArray(L, Const.luaScripts);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_UserId(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.UserId);
+		LuaScriptMgr.Push(L, Const.UserId);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_AppName(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.AppName);
+		LuaScriptMgr.Push(L, Const.AppName);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_AppPrefix(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.AppPrefix);
+		LuaScriptMgr.Push(L, Const.AppPrefix);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_ResDirectory(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.ResDirectory);
+		LuaScriptMgr.Push(L, Const.ResDirectory);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_WebUrl(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.WebUrl);
+		LuaScriptMgr.Push(L, Const.WebUrl);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_SocketAddress(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.SocketAddress);
+		LuaScriptMgr.Push(L, Const.SocketAddress);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_SocketPort(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.SocketPort);
+		LuaScriptMgr.Push(L, Const.SocketPort);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_uid(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.uid);
+		LuaScriptMgr.Push(L, Const.uid);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_sid(IntPtr L)
 	{
-		LuaScriptMgr.PushResult(L, Const.sid);
+		LuaScriptMgr.Push(L, Const.sid);
 		return 1;
 	}
 
@@ -196,7 +203,7 @@ public class ConstWrap
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_luaScripts(IntPtr L)
 	{
-		Const.luaScripts = (TextAsset[])LuaScriptMgr.GetNetObject(L, 3);
+		Const.luaScripts = LuaScriptMgr.GetNetObject<TextAsset[]>(L, 3);
 		return 0;
 	}
 

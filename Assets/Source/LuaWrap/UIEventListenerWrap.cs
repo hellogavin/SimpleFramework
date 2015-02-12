@@ -1,13 +1,15 @@
 ﻿using System;
 using UnityEngine;
 using LuaInterface;
+using Object = UnityEngine.Object;
 
 public class UIEventListenerWrap
 {
 	public static LuaMethod[] regs = new LuaMethod[]
 	{
 		new LuaMethod("Get", Get),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateUIEventListener),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -31,28 +33,22 @@ public class UIEventListenerWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateUIEventListener(IntPtr L)
 	{
-		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
-
-		if (count == 0)
-		{
-			obj = new UIEventListener();
-			LuaScriptMgr.PushResult(L, obj);
-			return 1;
-		}
-		else
-		{
-			LuaDLL.luaL_error(L, "invalid arguments to method: UIEventListener.New");
-		}
-
+		LuaDLL.luaL_error(L, "UIEventListener class does not have a constructor function");
 		return 0;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(UIEventListener));
+		return 1;
 	}
 
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "UIEventListener", typeof(UIEventListener), regs, fields, "UIEventListener");
+		LuaScriptMgr.RegisterLib(L, "UIEventListener", typeof(UIEventListener), regs, fields, "UnityEngine.MonoBehaviour");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -62,11 +58,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name parameter");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name parameter");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index parameter on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.parameter);
+		LuaScriptMgr.PushVarObject(L, obj.parameter);
 		return 1;
 	}
 
@@ -77,11 +82,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onSubmit");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onSubmit");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onSubmit on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onSubmit);
+		LuaScriptMgr.PushObject(L, obj.onSubmit);
 		return 1;
 	}
 
@@ -92,11 +106,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onClick");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onClick");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onClick on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onClick);
+		LuaScriptMgr.PushObject(L, obj.onClick);
 		return 1;
 	}
 
@@ -107,11 +130,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDoubleClick");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDoubleClick");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDoubleClick on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDoubleClick);
+		LuaScriptMgr.PushObject(L, obj.onDoubleClick);
 		return 1;
 	}
 
@@ -122,11 +154,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onHover");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onHover");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onHover on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onHover);
+		LuaScriptMgr.PushObject(L, obj.onHover);
 		return 1;
 	}
 
@@ -137,11 +178,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onPress");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onPress");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onPress on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onPress);
+		LuaScriptMgr.PushObject(L, obj.onPress);
 		return 1;
 	}
 
@@ -152,11 +202,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onSelect");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onSelect");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onSelect on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onSelect);
+		LuaScriptMgr.PushObject(L, obj.onSelect);
 		return 1;
 	}
 
@@ -167,11 +226,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onScroll");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onScroll");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onScroll on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onScroll);
+		LuaScriptMgr.PushObject(L, obj.onScroll);
 		return 1;
 	}
 
@@ -182,11 +250,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragStart");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragStart");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragStart on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDragStart);
+		LuaScriptMgr.PushObject(L, obj.onDragStart);
 		return 1;
 	}
 
@@ -197,11 +274,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDrag");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDrag");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDrag on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDrag);
+		LuaScriptMgr.PushObject(L, obj.onDrag);
 		return 1;
 	}
 
@@ -212,11 +298,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragOver");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragOver");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragOver on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDragOver);
+		LuaScriptMgr.PushObject(L, obj.onDragOver);
 		return 1;
 	}
 
@@ -227,11 +322,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragOut");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragOut");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragOut on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDragOut);
+		LuaScriptMgr.PushObject(L, obj.onDragOut);
 		return 1;
 	}
 
@@ -242,11 +346,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragEnd");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragEnd");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragEnd on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDragEnd);
+		LuaScriptMgr.PushObject(L, obj.onDragEnd);
 		return 1;
 	}
 
@@ -257,11 +370,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDrop");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDrop");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDrop on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onDrop);
+		LuaScriptMgr.PushObject(L, obj.onDrop);
 		return 1;
 	}
 
@@ -272,11 +394,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onKey");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onKey");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onKey on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onKey);
+		LuaScriptMgr.PushObject(L, obj.onKey);
 		return 1;
 	}
 
@@ -287,11 +418,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onTooltip");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onTooltip");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onTooltip on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		LuaScriptMgr.PushResult(L, obj.onTooltip);
+		LuaScriptMgr.PushObject(L, obj.onTooltip);
 		return 1;
 	}
 
@@ -302,7 +442,16 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name parameter");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name parameter");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index parameter on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
@@ -317,11 +466,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onSubmit");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onSubmit");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onSubmit on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onSubmit = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onSubmit = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -332,11 +490,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onClick");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onClick");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onClick on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onClick = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onClick = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -347,11 +514,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDoubleClick");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDoubleClick");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDoubleClick on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDoubleClick = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDoubleClick = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -362,11 +538,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onHover");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onHover");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onHover on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onHover = (UIEventListener.BoolDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onHover = LuaScriptMgr.GetNetObject<UIEventListener.BoolDelegate>(L, 3);
 		return 0;
 	}
 
@@ -377,11 +562,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onPress");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onPress");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onPress on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onPress = (UIEventListener.BoolDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onPress = LuaScriptMgr.GetNetObject<UIEventListener.BoolDelegate>(L, 3);
 		return 0;
 	}
 
@@ -392,11 +586,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onSelect");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onSelect");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onSelect on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onSelect = (UIEventListener.BoolDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onSelect = LuaScriptMgr.GetNetObject<UIEventListener.BoolDelegate>(L, 3);
 		return 0;
 	}
 
@@ -407,11 +610,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onScroll");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onScroll");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onScroll on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onScroll = (UIEventListener.FloatDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onScroll = LuaScriptMgr.GetNetObject<UIEventListener.FloatDelegate>(L, 3);
 		return 0;
 	}
 
@@ -422,11 +634,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragStart");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragStart");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragStart on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDragStart = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDragStart = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -437,11 +658,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDrag");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDrag");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDrag on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDrag = (UIEventListener.VectorDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDrag = LuaScriptMgr.GetNetObject<UIEventListener.VectorDelegate>(L, 3);
 		return 0;
 	}
 
@@ -452,11 +682,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragOver");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragOver");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragOver on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDragOver = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDragOver = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -467,11 +706,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragOut");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragOut");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragOut on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDragOut = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDragOut = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -482,11 +730,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDragEnd");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDragEnd");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDragEnd on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDragEnd = (UIEventListener.VoidDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDragEnd = LuaScriptMgr.GetNetObject<UIEventListener.VoidDelegate>(L, 3);
 		return 0;
 	}
 
@@ -497,11 +754,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onDrop");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onDrop");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onDrop on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onDrop = (UIEventListener.ObjectDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onDrop = LuaScriptMgr.GetNetObject<UIEventListener.ObjectDelegate>(L, 3);
 		return 0;
 	}
 
@@ -512,11 +778,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onKey");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onKey");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onKey on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onKey = (UIEventListener.KeyCodeDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onKey = LuaScriptMgr.GetNetObject<UIEventListener.KeyCodeDelegate>(L, 3);
 		return 0;
 	}
 
@@ -527,11 +802,20 @@ public class UIEventListenerWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name onTooltip");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name onTooltip");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index onTooltip on a nil value");
+			}
 		}
 
 		UIEventListener obj = (UIEventListener)o;
-		obj.onTooltip = (UIEventListener.BoolDelegate)LuaScriptMgr.GetNetObject(L, 3);
+		obj.onTooltip = LuaScriptMgr.GetNetObject<UIEventListener.BoolDelegate>(L, 3);
 		return 0;
 	}
 
@@ -539,9 +823,9 @@ public class UIEventListenerWrap
 	static int Get(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		UIEventListener o = UIEventListener.Get(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 }

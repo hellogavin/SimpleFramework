@@ -34,7 +34,7 @@ public class GameManager : BaseLua {
         GameObject gui = GameObject.Find(name);
         if (gui != null) return;
 
-        GameObject prefab = io.LoadPrefab(name);
+        GameObject prefab = ioo.LoadPrefab(name);
         gui = Instantiate(prefab) as GameObject;
         gui.name = name;
     }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 using LuaInterface;
+using Object = UnityEngine.Object;
 
 public class GameObjectWrap
 {
@@ -24,7 +26,8 @@ public class GameObjectWrap
 		new LuaMethod("BroadcastMessage", BroadcastMessage),
 		new LuaMethod("AddComponent", AddComponent),
 		new LuaMethod("Find", Find),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateGameObject),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -55,31 +58,30 @@ public class GameObjectWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateGameObject(IntPtr L)
 	{
 		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
 
 		Type[] types2 = {typeof(string)};
 		if (count == 0)
 		{
-			obj = new GameObject();
-			LuaScriptMgr.PushResult(L, obj);
+			GameObject obj = new GameObject();
+			LuaScriptMgr.Push(L, obj);
 			return 1;
 		}
 		else if (count == 1)
 		{
 			string arg0 = LuaScriptMgr.GetString(L, 1);
-			obj = new GameObject(arg0);
-			LuaScriptMgr.PushResult(L, obj);
+			GameObject obj = new GameObject(arg0);
+			LuaScriptMgr.Push(L, obj);
 			return 1;
 		}
 		else if (LuaScriptMgr.CheckTypes(L, types2, 1) && LuaScriptMgr.CheckParamsType(L, typeof(Type), 2, count - 1))
 		{
 			string arg0 = LuaScriptMgr.GetString(L, 1);
 			Type[] objs1 = LuaScriptMgr.GetParamsObject<Type>(L, 2, count - 1);
-			obj = new GameObject(arg0,objs1);
-			LuaScriptMgr.PushResult(L, obj);
+			GameObject obj = new GameObject(arg0,objs1);
+			LuaScriptMgr.Push(L, obj);
 			return 1;
 		}
 		else
@@ -90,9 +92,16 @@ public class GameObjectWrap
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(GameObject));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "GameObject", typeof(GameObject), regs, fields, "Object");
+		LuaScriptMgr.RegisterLib(L, "UnityEngine.GameObject", typeof(GameObject), regs, fields, "UnityEngine.Object");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -102,11 +111,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name isStatic");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name isStatic");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index isStatic on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.isStatic);
+		LuaScriptMgr.Push(L, obj.isStatic);
 		return 1;
 	}
 
@@ -117,11 +135,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name transform");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name transform");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index transform on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.transform);
+		LuaScriptMgr.Push(L, obj.transform);
 		return 1;
 	}
 
@@ -132,11 +159,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name rigidbody");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name rigidbody");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index rigidbody on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.rigidbody);
+		LuaScriptMgr.Push(L, obj.rigidbody);
 		return 1;
 	}
 
@@ -147,11 +183,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name rigidbody2D");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name rigidbody2D");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index rigidbody2D on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.rigidbody2D);
+		LuaScriptMgr.Push(L, obj.rigidbody2D);
 		return 1;
 	}
 
@@ -162,11 +207,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name camera");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name camera");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index camera on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.camera);
+		LuaScriptMgr.Push(L, obj.camera);
 		return 1;
 	}
 
@@ -177,11 +231,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name light");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name light");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index light on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.light);
+		LuaScriptMgr.Push(L, obj.light);
 		return 1;
 	}
 
@@ -192,11 +255,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name animation");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name animation");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index animation on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.animation);
+		LuaScriptMgr.Push(L, obj.animation);
 		return 1;
 	}
 
@@ -207,11 +279,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name constantForce");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name constantForce");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index constantForce on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.constantForce);
+		LuaScriptMgr.Push(L, obj.constantForce);
 		return 1;
 	}
 
@@ -222,11 +303,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name renderer");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name renderer");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index renderer on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.renderer);
+		LuaScriptMgr.Push(L, obj.renderer);
 		return 1;
 	}
 
@@ -237,11 +327,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name audio");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name audio");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index audio on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.audio);
+		LuaScriptMgr.Push(L, obj.audio);
 		return 1;
 	}
 
@@ -252,11 +351,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name guiText");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name guiText");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index guiText on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.guiText);
+		LuaScriptMgr.Push(L, obj.guiText);
 		return 1;
 	}
 
@@ -267,11 +375,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name networkView");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name networkView");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index networkView on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.networkView);
+		LuaScriptMgr.Push(L, obj.networkView);
 		return 1;
 	}
 
@@ -282,11 +399,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name guiTexture");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name guiTexture");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index guiTexture on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.guiTexture);
+		LuaScriptMgr.Push(L, obj.guiTexture);
 		return 1;
 	}
 
@@ -297,11 +423,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name collider");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name collider");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index collider on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.collider);
+		LuaScriptMgr.Push(L, obj.collider);
 		return 1;
 	}
 
@@ -312,11 +447,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name collider2D");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name collider2D");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index collider2D on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.collider2D);
+		LuaScriptMgr.Push(L, obj.collider2D);
 		return 1;
 	}
 
@@ -327,11 +471,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name hingeJoint");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name hingeJoint");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index hingeJoint on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.hingeJoint);
+		LuaScriptMgr.Push(L, obj.hingeJoint);
 		return 1;
 	}
 
@@ -342,11 +495,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name particleEmitter");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name particleEmitter");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index particleEmitter on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.particleEmitter);
+		LuaScriptMgr.Push(L, obj.particleEmitter);
 		return 1;
 	}
 
@@ -357,11 +519,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name particleSystem");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name particleSystem");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index particleSystem on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.particleSystem);
+		LuaScriptMgr.Push(L, obj.particleSystem);
 		return 1;
 	}
 
@@ -372,11 +543,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name layer");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name layer");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index layer on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.layer);
+		LuaScriptMgr.Push(L, obj.layer);
 		return 1;
 	}
 
@@ -387,11 +567,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name activeSelf");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name activeSelf");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index activeSelf on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.activeSelf);
+		LuaScriptMgr.Push(L, obj.activeSelf);
 		return 1;
 	}
 
@@ -402,11 +591,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name activeInHierarchy");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name activeInHierarchy");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index activeInHierarchy on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.activeInHierarchy);
+		LuaScriptMgr.Push(L, obj.activeInHierarchy);
 		return 1;
 	}
 
@@ -417,11 +615,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name tag");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name tag");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index tag on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.tag);
+		LuaScriptMgr.Push(L, obj.tag);
 		return 1;
 	}
 
@@ -432,11 +639,20 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name gameObject");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name gameObject");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index gameObject on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
-		LuaScriptMgr.PushResult(L, obj.gameObject);
+		LuaScriptMgr.Push(L, obj.gameObject);
 		return 1;
 	}
 
@@ -447,7 +663,16 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name isStatic");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name isStatic");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index isStatic on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
@@ -462,7 +687,16 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name layer");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name layer");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index layer on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
@@ -477,7 +711,16 @@ public class GameObjectWrap
 
 		if (o == null)
 		{
-			LuaDLL.luaL_error(L, "unknown member name tag");
+			LuaTypes types = LuaDLL.lua_type(L, 1);
+
+			if (types == LuaTypes.LUA_TTABLE)
+			{
+				LuaDLL.luaL_error(L, "unknown member name tag");
+			}
+			else
+			{
+				LuaDLL.luaL_error(L, "attempt to index tag on a nil value");
+			}
 		}
 
 		GameObject obj = (GameObject)o;
@@ -489,8 +732,8 @@ public class GameObjectWrap
 	static int SampleAnimation(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 3);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-		AnimationClip arg0 = (AnimationClip)LuaScriptMgr.GetNetObject(L, 2);
+		GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+		AnimationClip arg0 = LuaScriptMgr.GetNetObject<AnimationClip>(L, 2);
 		float arg1 = (float)LuaScriptMgr.GetNumber(L, 3);
 		obj.SampleAnimation(arg0,arg1);
 		return 0;
@@ -500,9 +743,9 @@ public class GameObjectWrap
 	static int CreatePrimitive(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		PrimitiveType arg0 = (PrimitiveType)LuaScriptMgr.GetNetObject(L, 1);
+		PrimitiveType arg0 = LuaScriptMgr.GetNetObject<PrimitiveType>(L, 1);
 		GameObject o = GameObject.CreatePrimitive(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -516,18 +759,18 @@ public class GameObjectWrap
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			Component o = obj.GetComponent(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			Component o = obj.GetComponent(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -542,10 +785,10 @@ public class GameObjectWrap
 	static int GetComponentInChildren(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-		Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+		GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+		Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 		Component o = obj.GetComponentInChildren(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -553,22 +796,40 @@ public class GameObjectWrap
 	static int GetComponentInParent(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-		Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+		GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+		Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 		Component o = obj.GetComponentInParent(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetComponents(IntPtr L)
 	{
-		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-		Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
-		Component[] o = obj.GetComponents(arg0);
-		LuaScriptMgr.PushResult(L, o);
-		return 1;
+		int count = LuaDLL.lua_gettop(L);
+
+		if (count == 2)
+		{
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
+			Component[] o = obj.GetComponents(arg0);
+			LuaScriptMgr.PushArray(L, o);
+			return 1;
+		}
+		else if (count == 3)
+		{
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
+			List<Component> arg1 = LuaScriptMgr.GetNetObject<List<Component>>(L, 3);
+			obj.GetComponents(arg0,arg1);
+			return 0;
+		}
+		else
+		{
+			LuaDLL.luaL_error(L, "invalid arguments to method: GameObject.GetComponents");
+		}
+
+		return 0;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -578,19 +839,19 @@ public class GameObjectWrap
 
 		if (count == 2)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			Component[] o = obj.GetComponentsInChildren(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushArray(L, o);
 			return 1;
 		}
 		else if (count == 3)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			bool arg1 = LuaScriptMgr.GetBoolean(L, 3);
 			Component[] o = obj.GetComponentsInChildren(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushArray(L, o);
 			return 1;
 		}
 		else
@@ -608,19 +869,19 @@ public class GameObjectWrap
 
 		if (count == 2)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			Component[] o = obj.GetComponentsInParent(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushArray(L, o);
 			return 1;
 		}
 		else if (count == 3)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			bool arg1 = LuaScriptMgr.GetBoolean(L, 3);
 			Component[] o = obj.GetComponentsInParent(arg0,arg1);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.PushArray(L, o);
 			return 1;
 		}
 		else
@@ -635,7 +896,7 @@ public class GameObjectWrap
 	static int SetActive(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		bool arg0 = LuaScriptMgr.GetBoolean(L, 2);
 		obj.SetActive(arg0);
 		return 0;
@@ -645,10 +906,10 @@ public class GameObjectWrap
 	static int CompareTag(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 		bool o = obj.CompareTag(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -658,7 +919,7 @@ public class GameObjectWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject o = GameObject.FindGameObjectWithTag(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -668,7 +929,7 @@ public class GameObjectWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject o = GameObject.FindWithTag(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -678,7 +939,7 @@ public class GameObjectWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject[] o = GameObject.FindGameObjectsWithTag(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushArray(L, o);
 		return 1;
 	}
 
@@ -692,22 +953,22 @@ public class GameObjectWrap
 
 		if (count == 2)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			obj.SendMessageUpwards(arg0);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
-			SendMessageOptions arg1 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 3);
+			SendMessageOptions arg1 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 3);
 			obj.SendMessageUpwards(arg0,arg1);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types2, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
 			obj.SendMessageUpwards(arg0,arg1);
@@ -715,10 +976,10 @@ public class GameObjectWrap
 		}
 		else if (count == 4)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
-			SendMessageOptions arg2 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 4);
+			SendMessageOptions arg2 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 4);
 			obj.SendMessageUpwards(arg0,arg1,arg2);
 			return 0;
 		}
@@ -740,22 +1001,22 @@ public class GameObjectWrap
 
 		if (count == 2)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			obj.SendMessage(arg0);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
-			SendMessageOptions arg1 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 3);
+			SendMessageOptions arg1 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 3);
 			obj.SendMessage(arg0,arg1);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types2, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
 			obj.SendMessage(arg0,arg1);
@@ -763,10 +1024,10 @@ public class GameObjectWrap
 		}
 		else if (count == 4)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
-			SendMessageOptions arg2 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 4);
+			SendMessageOptions arg2 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 4);
 			obj.SendMessage(arg0,arg1,arg2);
 			return 0;
 		}
@@ -788,22 +1049,22 @@ public class GameObjectWrap
 
 		if (count == 2)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			obj.BroadcastMessage(arg0);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
-			SendMessageOptions arg1 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 3);
+			SendMessageOptions arg1 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 3);
 			obj.BroadcastMessage(arg0,arg1);
 			return 0;
 		}
 		else if (count == 3 && LuaScriptMgr.CheckTypes(L, types2, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
 			obj.BroadcastMessage(arg0,arg1);
@@ -811,10 +1072,10 @@ public class GameObjectWrap
 		}
 		else if (count == 4)
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 			object arg1 = LuaScriptMgr.GetVarObject(L, 3);
-			SendMessageOptions arg2 = (SendMessageOptions)LuaScriptMgr.GetNetObject(L, 4);
+			SendMessageOptions arg2 = LuaScriptMgr.GetNetObject<SendMessageOptions>(L, 4);
 			obj.BroadcastMessage(arg0,arg1,arg2);
 			return 0;
 		}
@@ -836,18 +1097,18 @@ public class GameObjectWrap
 
 		if (count == 2 && LuaScriptMgr.CheckTypes(L, types0, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
-			Type arg0 = (Type)LuaScriptMgr.GetNetObject(L, 2);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
+			Type arg0 = LuaScriptMgr.GetTypeObject(L, 2);
 			Component o = obj.AddComponent(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else if (count == 2 && LuaScriptMgr.CheckTypes(L, types1, 1))
 		{
-			GameObject obj = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+			GameObject obj = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 			string arg0 = LuaScriptMgr.GetString(L, 2);
 			Component o = obj.AddComponent(arg0);
-			LuaScriptMgr.PushResult(L, o);
+			LuaScriptMgr.Push(L, o);
 			return 1;
 		}
 		else
@@ -864,7 +1125,7 @@ public class GameObjectWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		GameObject o = GameObject.Find(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 }

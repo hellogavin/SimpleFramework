@@ -15,7 +15,7 @@ public class BaseLua : MonoBehaviour {
     protected LuaScriptMgr luaMgr {
         get {
             if (mgr == null) {
-                mgr = io.gameManager.luaMgr;
+                mgr = ioo.gameManager.luaMgr;
             }
             return mgr;
         }

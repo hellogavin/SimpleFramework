@@ -17,28 +17,20 @@ public class PanelManager : MonoBehaviour {
     Transform Parent {
         get {
             if (parent == null) {
-                parent = io.guiCamera;
+                parent = ioo.guiCamera;
             }
             return parent;
         }
-    }
-
-    void Update() {
-        if (events.Count == 0) return;
-        KeyValue ev = events.Dequeue();
-        string name = ev.key;
-        string text = ev.value;
-        AssetBundle bundle = io.resourceManager.LoadBundle(name);
-        StartCoroutine(StartCreatePanel(name, bundle, text));
-        Debug.LogWarning("CreatePanel::>> " + name + " " + bundle);
     }
 
     /// <summary>
     /// 创建面板，请求资源管理器
     /// </summary>
     /// <param name="type"></param>
-    public void CreatePanel(string name, string text = null) {
-        events.Enqueue(new KeyValue(name, text));
+    public void CreatePanel(string name) {
+        AssetBundle bundle = ioo.resourceManager.LoadBundle(name);
+        StartCoroutine(StartCreatePanel(name, bundle, string.Empty));
+        Debug.LogWarning("CreatePanel::>> " + name + " " + bundle);
     }
 
     /// <summary>

@@ -37,7 +37,7 @@ public class ResourceManager : MonoBehaviour {
         shared = AssetBundle.CreateFromMemoryImmediate(stream); 
 
         shared.Load("Dialog", typeof(GameObject));
-        io.gameManager.OnResourceInited();    //资源初始化完成，回调游戏管理器，执行后续操作 
+        ioo.gameManager.OnResourceInited();    //资源初始化完成，回调游戏管理器，执行后续操作 
     }
 
     /// <summary>

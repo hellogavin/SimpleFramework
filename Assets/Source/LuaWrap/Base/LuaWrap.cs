@@ -1,5 +1,6 @@
 ﻿using System;
 using LuaInterface;
+using System.Runtime.InteropServices;
 
 
 public struct LuaMethod
@@ -24,26 +25,21 @@ public struct LuaField
     {
         name = str;
         getter = g;
-        setter = s;
+        setter = s;        
     }
 };
 
 public struct LuaEnum
 {
     public string name;
-    public int val;
+    public object val;
 
-    public LuaEnum(string str, int v)
+    public LuaEnum(string str, object v)
     {
         name = str;
         val = v;
     }
 }
-
-//public interface ILuaWrap 
-//{
-//    void Register();
-//}
 
 public class NoToLuaAttribute : System.Attribute
 {
@@ -51,4 +47,20 @@ public class NoToLuaAttribute : System.Attribute
     {
 
     }
+}
+
+public interface ILuaWrap 
+{
+    void Register();
+}
+
+public class LuaStringBuffer
+{
+    public LuaStringBuffer(IntPtr source,int len)
+    {
+        buffer = new byte[len];
+        Marshal.Copy(source, buffer, 0, len);        
+    }
+
+    public byte[] buffer = null;    
 }

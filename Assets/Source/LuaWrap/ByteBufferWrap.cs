@@ -22,7 +22,8 @@ public class ByteBufferWrap
 		new LuaMethod("ReadString", ReadString),
 		new LuaMethod("ToBytes", ToBytes),
 		new LuaMethod("Flush", Flush),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateByteBuffer),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
 	static LuaField[] fields = new LuaField[]
@@ -30,22 +31,21 @@ public class ByteBufferWrap
 	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateByteBuffer(IntPtr L)
 	{
 		int count = LuaDLL.lua_gettop(L);
-		object obj = null;
 
 		if (count == 0)
 		{
-			obj = new ByteBuffer();
-			LuaScriptMgr.PushResult(L, obj);
+			ByteBuffer obj = new ByteBuffer();
+			LuaScriptMgr.PushObject(L, obj);
 			return 1;
 		}
 		else if (count == 1)
 		{
 			byte[] objs0 = LuaScriptMgr.GetArrayNumber<byte>(L, 1);
-			obj = new ByteBuffer(objs0);
-			LuaScriptMgr.PushResult(L, obj);
+			ByteBuffer obj = new ByteBuffer(objs0);
+			LuaScriptMgr.PushObject(L, obj);
 			return 1;
 		}
 		else
@@ -56,16 +56,23 @@ public class ByteBufferWrap
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(ByteBuffer));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "ByteBuffer", typeof(ByteBuffer), regs, fields, "ByteBuffer");
+		LuaScriptMgr.RegisterLib(L, "ByteBuffer", typeof(ByteBuffer), regs, fields, "System.Object");
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int Close(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		obj.Close();
 		return 0;
 	}
@@ -74,7 +81,7 @@ public class ByteBufferWrap
 	static int WriteByte(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		int arg0 = (int)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteByte(arg0);
 		return 0;
@@ -84,7 +91,7 @@ public class ByteBufferWrap
 	static int WriteInt(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		int arg0 = (int)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteInt(arg0);
 		return 0;
@@ -94,7 +101,7 @@ public class ByteBufferWrap
 	static int WriteShort(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		ushort arg0 = (ushort)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteShort(arg0);
 		return 0;
@@ -104,7 +111,7 @@ public class ByteBufferWrap
 	static int WriteLong(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		long arg0 = (long)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteLong(arg0);
 		return 0;
@@ -114,7 +121,7 @@ public class ByteBufferWrap
 	static int WriteFloat(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		float arg0 = (float)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteFloat(arg0);
 		return 0;
@@ -124,7 +131,7 @@ public class ByteBufferWrap
 	static int WriteDouble(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		double arg0 = (double)LuaScriptMgr.GetNumber(L, 2);
 		obj.WriteDouble(arg0);
 		return 0;
@@ -134,7 +141,7 @@ public class ByteBufferWrap
 	static int WriteString(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 2);
 		obj.WriteString(arg0);
 		return 0;
@@ -144,9 +151,9 @@ public class ByteBufferWrap
 	static int ReadByte(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		int o = obj.ReadByte();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -154,9 +161,9 @@ public class ByteBufferWrap
 	static int ReadInt(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		int o = obj.ReadInt();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -164,9 +171,9 @@ public class ByteBufferWrap
 	static int ReadShort(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		ushort o = obj.ReadShort();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -174,9 +181,9 @@ public class ByteBufferWrap
 	static int ReadLong(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		long o = obj.ReadLong();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -184,9 +191,9 @@ public class ByteBufferWrap
 	static int ReadFloat(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		float o = obj.ReadFloat();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -194,9 +201,9 @@ public class ByteBufferWrap
 	static int ReadDouble(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		double o = obj.ReadDouble();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -204,9 +211,9 @@ public class ByteBufferWrap
 	static int ReadString(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		string o = obj.ReadString();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -214,9 +221,9 @@ public class ByteBufferWrap
 	static int ToBytes(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		byte[] o = obj.ToBytes();
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushArray(L, o);
 		return 1;
 	}
 
@@ -224,7 +231,7 @@ public class ByteBufferWrap
 	static int Flush(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		ByteBuffer obj = (ByteBuffer)LuaScriptMgr.GetNetObject(L, 1);
+		ByteBuffer obj = LuaScriptMgr.GetNetObject<ByteBuffer>(L, 1);
 		obj.Flush();
 		return 0;
 	}

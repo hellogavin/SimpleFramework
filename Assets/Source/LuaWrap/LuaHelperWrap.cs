@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using LuaInterface;
+using Object = UnityEngine.Object;
 
 public class LuaHelperWrap
 {
@@ -13,23 +14,28 @@ public class LuaHelperWrap
 		new LuaMethod("GetAllChild", GetAllChild),
 		new LuaMethod("Action", Action),
 		new LuaMethod("VoidDelegate", VoidDelegate),
-		new LuaMethod("New", Create),
+		new LuaMethod("New", _CreateLuaHelper),
+		new LuaMethod("GetClassType", GetClassType),
 	};
 
-	static LuaField[] fields = new LuaField[]
-	{
-	};
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Create(IntPtr L)
+	static int _CreateLuaHelper(IntPtr L)
 	{
 		LuaDLL.luaL_error(L, "LuaHelper class does not have a constructor function");
 		return 0;
 	}
 
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetClassType(IntPtr L)
+	{
+		LuaScriptMgr.Push(L, typeof(LuaHelper));
+		return 1;
+	}
+
 	public static void Register(IntPtr L)
 	{
-		LuaScriptMgr.RegisterLib(L, "LuaHelper", typeof(LuaHelper), regs, fields, "LuaHelper");
+		LuaScriptMgr.RegisterLib(L, "LuaHelper", regs);
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -38,7 +44,7 @@ public class LuaHelperWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		string arg0 = LuaScriptMgr.GetLuaString(L, 1);
 		Type o = LuaHelper.GetType(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -46,10 +52,10 @@ public class LuaHelperWrap
 	static int GetComponentInChildren(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component o = LuaHelper.GetComponentInChildren(arg0,arg1);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -57,10 +63,10 @@ public class LuaHelperWrap
 	static int GetComponent(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component o = LuaHelper.GetComponent(arg0,arg1);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.Push(L, o);
 		return 1;
 	}
 
@@ -68,10 +74,10 @@ public class LuaHelperWrap
 	static int GetComponentsInChildren(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 2);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		string arg1 = LuaScriptMgr.GetLuaString(L, 2);
 		Component[] o = LuaHelper.GetComponentsInChildren(arg0,arg1);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushArray(L, o);
 		return 1;
 	}
 
@@ -79,9 +85,9 @@ public class LuaHelperWrap
 	static int GetAllChild(IntPtr L)
 	{
 		LuaScriptMgr.CheckArgsCount(L, 1);
-		GameObject arg0 = (GameObject)LuaScriptMgr.GetNetObject(L, 1);
+		GameObject arg0 = LuaScriptMgr.GetNetObject<GameObject>(L, 1);
 		Transform[] o = LuaHelper.GetAllChild(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushArray(L, o);
 		return 1;
 	}
 
@@ -91,7 +97,7 @@ public class LuaHelperWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		LuaFunction arg0 = LuaScriptMgr.GetLuaFunction(L, 1);
 		Action o = LuaHelper.Action(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushObject(L, o);
 		return 1;
 	}
 
@@ -101,7 +107,7 @@ public class LuaHelperWrap
 		LuaScriptMgr.CheckArgsCount(L, 1);
 		LuaFunction arg0 = LuaScriptMgr.GetLuaFunction(L, 1);
 		UIEventListener.VoidDelegate o = LuaHelper.VoidDelegate(arg0);
-		LuaScriptMgr.PushResult(L, o);
+		LuaScriptMgr.PushObject(L, o);
 		return 1;
 	}
 }

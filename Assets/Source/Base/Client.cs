@@ -58,30 +58,34 @@ public enum TestEnum
     Three,
 }
 
+
 public class Client : MonoBehaviour 
 {
+    public Timer timer = null;
     LuaScriptMgr luaMgr = null;
-    LuaThread thread = null;
 
     void Awake()
-    {
+    {        
         luaMgr = new LuaScriptMgr();
-        luaMgr.Start();
-
-        luaMgr.DoFile("Test.Lua");
+        luaMgr.Start();            
     }
 
 	void Start () 
     {
-
+        luaMgr.DoFile("Test.Lua");    
 	}
 
     void Update()
     {
-        if (thread != null && !thread.IsDead())
+        //if (thread != null && !thread.IsDead())
+        //{
+        //    thread.Resume();
+        //}
+
+        if (timer != null)
         {
-            thread.Resume();
-        }
+            timer.OnUpdate(Time.deltaTime);
+        }                
     }
 		
 	void OnGUI() 
@@ -90,21 +94,20 @@ public class Client : MonoBehaviour
         {            
             float time = Time.realtimeSinceStartup;
 
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 200000; i++)
             {
                 transform.position = Vector3.one;
             }
 
             Debug.Log("c# cost time: " + (Time.realtimeSinceStartup - time));
-            time = Time.realtimeSinceStartup;
-
+            
             luaMgr.CallLuaFunction("Test", transform);            
         }
         else if (GUI.Button(new Rect(10, 80, 120, 50), "Coroutine"))
         {
-            LuaFunction func = luaMgr.GetLuaFunction("myFunc");
-            thread = new LuaThread(luaMgr.lua, func);
-            thread.Start();
+            //LuaFunction func = luaMgr.GetLuaFunction("myFunc");
+            //thread = new LuaThread(luaMgr.lua, func);
+            //thread.Start();
         }
 	}
 }
