@@ -33,17 +33,17 @@ namespace LuaInterface
 
         static byte[] DefaultLoader(string name)
         {
-            byte[] str = null;
+            //byte[] str = null;    modify by jarjin
             string path = Util.LuaPath(name);
-
+            /*
             using (FileStream file = new FileStream(path, FileMode.Open))
             {
                 str = new byte[(int)file.Length];
                 file.Read(str, 0, str.Length);
                 file.Close();
             }
-
-            return str;
+            */
+            return File.ReadAllBytes(path);
         }
 
 		[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]

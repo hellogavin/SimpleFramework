@@ -27,4 +27,11 @@ public class GlobalGenerator : MonoBehaviour {
             manager.name = name;
         }
     }
+
+    void OnGUI() {
+        GUI.Label(new Rect(10, 0, 500, 50), "(1) 单击 \"Lua/Gen Lua Wrap Files\"。");
+        GUI.Label(new Rect(10, 20, 500, 50), "(2) 单击 \"Lua/Gen u3d Wrap Files\"。");
+        GUI.Label(new Rect(10, 40, 500, 50), "(3) 运行");
+        GUI.Label(new Rect(10, 60, 500, 50), "PS: 清除缓存，单击\"Lua/Clear LuaBinder File + Wrap Files\"。");
+    }
 }

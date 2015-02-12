@@ -195,15 +195,17 @@ namespace LuaInterface
             // Load with Unity3D resources            
             //string text = LuaHelper.Load(fileName);
 
-            byte[] bt = null;
+            
             string path = Util.LuaPath(fileName);
-
+			byte[] bt = File.ReadAllBytes(path);
+			/* modify by jarjin
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {                            
                 BinaryReader br = new BinaryReader(fs);
                 bt = br.ReadBytes((int)fs.Length);                               
                 fs.Close();
             }
+			*/
 
 
             //if( text == null )

@@ -327,23 +327,24 @@ public class LuaScriptMgr
 
     public byte[] Loader(string name)
     {
-        byte[] str = null;        
+        //byte[] str = null;        
 #if !LUA_ZIP
         string path = Util.LuaPath(name);    
-
+        /* modify by jarjin
         using (FileStream file = new FileStream(path, FileMode.Open))
         {
             str = new byte[(int)file.Length];
             file.Read(str, 0, str.Length);    
             file.Close();        
-        }                        
+        } 
+        */
 #else
         TextAsset luaCode = file.Read<TextAsset>(name);
         str = luaCode.bytes;
         Resources.UnloadAsset(luaCode);
 #endif
         fileList.Add(name);
-        return str;
+        return File.ReadAllBytes(path);
     }
 
     static bool PushLuaTable(IntPtr L, string fullPath)

@@ -80,7 +80,7 @@ public static class LuaBinding
         public BindType(Type t)
         {
             string str = t.ToString();
-            str = GetTypeStr(str);
+            //str = GetTypeStr(str);
             libName = str;
             type = t;
 
@@ -220,19 +220,21 @@ public static class LuaBinding
         _GT(typeof(TimerManager)),
         _GT(typeof(LuaHelper)),
         _GT(typeof(BaseLua)),
+        _GT(typeof(Type)),
+		_GT(typeof(Hashtable)),
 
         //系统自带
-		_GT(typeof(Hashtable)),
+        /*
         _GT(typeof(Vector2)),
         _GT(typeof(Vector3)),
         _GT(typeof(GameObject)),
         _GT(typeof(Transform)),
-        _GT(typeof(Type)),
         _GT(typeof(Component)),
         _GT(typeof(Behaviour)),
         _GT(typeof(MonoBehaviour)),
         _GT(typeof(Time)),
         _GT(typeof(Application)),
+         */
     };
 
     [MenuItem("Lua/Gen Lua Wrap Files", false, 11)]
@@ -270,13 +272,12 @@ public static class LuaBinding
         {
             sb1.AppendFormat("\t\t{0}Wrap.Register(L);\r\n", binds[i].wrapName);
         }
-
         Debug.Log("Generate lua binding files over");
         Debug.Log(sb1.ToString());
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Thinky/Gen LuaBinder File", false, 12)]
+    //[MenuItem("Lua/Gen LuaBinder File", false, 12)]
     static void GenLuaBinder()
     {
         StringBuilder sb = new StringBuilder();
@@ -313,7 +314,7 @@ public static class LuaBinding
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Lua/Clear LuaBinder File", false, 13)]
+    [MenuItem("Lua/Clear LuaBinder File + Wrap Files", false, 13)]
     static void ClearLuaBinder()
     {
         StringBuilder sb = new StringBuilder();
@@ -334,7 +335,11 @@ public static class LuaBinding
             textWriter.Flush();
             textWriter.Close();
         }
-
+        string path = Application.dataPath + "/Source/LuaWrap/";
+        string[] names = Directory.GetFiles(path);
+        foreach (var filename in names) {
+            File.Delete(filename); //删除缓存
+        }
         AssetDatabase.Refresh();
     }
 

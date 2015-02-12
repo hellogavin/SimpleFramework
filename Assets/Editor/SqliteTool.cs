@@ -27,7 +27,7 @@ public class SQLiteTool : EditorWindow {
         command = EditorGUILayout.TextArea(command, GUILayout.Height(position.height - 50));
         EditorGUILayout.EndScrollView();
 
-        Rect r = EditorGUILayout.BeginHorizontal("Button");
+        EditorGUILayout.BeginHorizontal("Button");
         GUI.backgroundColor = Color.cyan;
         if (GUILayout.Button("Open Sqlite DataFile")) OpenSqlite();
         GUI.backgroundColor = Color.green;
