@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// È«¾Ö¹¹ÔìÆ÷£¬Ã¿¸ö³¡¾°Àï¶¼ÓÐ£¬ËùÒÔÃ¿¸ö³¡¾°¶¼»á³õÊ¼»¯Ò»±é£¬Ò²»á³õÊ¼»¯ÓÎÏ·¹ÜÀíÆ÷Ò»´Î
-/// Èç¹ûÓÎÏ·¹ÜÀíÆ÷ÒÑ¾­´æÔÚÁË£¬¾ÍÌø¹ýÁË£¬·ñÔò´´½¨ÓÎÏ·¹ÜÀíÆ÷£¬À´±£Ö¤ÓÎÏ·ÀïÖ»ÓÐÒ»¸öGameManager
+/// å…¨å±€æž„é€ å™¨ï¼Œæ¯ä¸ªåœºæ™¯é‡Œéƒ½æœ‰ï¼Œæ‰€ä»¥æ¯ä¸ªåœºæ™¯éƒ½ä¼šåˆå§‹åŒ–ä¸€éï¼Œä¹Ÿä¼šåˆå§‹åŒ–æ¸¸æˆç®¡ç†å™¨ä¸€æ¬¡
+/// å¦‚æžœæ¸¸æˆç®¡ç†å™¨å·²ç»å­˜åœ¨äº†ï¼Œå°±è·³è¿‡äº†ï¼Œå¦åˆ™åˆ›å»ºæ¸¸æˆç®¡ç†å™¨ï¼Œæ¥ä¿è¯æ¸¸æˆé‡Œåªæœ‰ä¸€ä¸ªGameManager
 /// </summary>
 public class GlobalGenerator : MonoBehaviour {
 
@@ -16,7 +16,7 @@ public class GlobalGenerator : MonoBehaviour {
     }
 
     /// <summary>
-    /// ÊµÀý»¯ÓÎÏ·¹ÜÀíÆ÷
+    /// å®žä¾‹åŒ–æ¸¸æˆç®¡ç†å™¨
     /// </summary>
     public void InitGameMangager() {
         string name = "GameManager";
@@ -29,10 +29,10 @@ public class GlobalGenerator : MonoBehaviour {
     }
 
     void OnGUI() {
-        GUI.Label(new Rect(10, 0, 500, 50), "(1) µ¥»÷ \"Lua/Gen Lua Wrap Files\"¡£");
-        GUI.Label(new Rect(10, 20, 500, 50), "(2) ÔËÐÐUnityÓÎÏ·");
-        GUI.Label(new Rect(10, 40, 500, 50), "PS: Çå³ý»º´æ£¬µ¥»÷\"Lua/Clear LuaBinder File + Wrap Files\"¡£");
-        GUI.Label(new Rect(10, 60, 900, 50), "PS: ÈôÔËÐÐµ½Õæ»ú£¬ÇëÉèÖÃConst.DebugMode=false£¬±¾µØµ÷ÊÔÇëÉèÖÃConst.DebugMode=true");
-        GUI.Label(new Rect(10, 80, 500, 50), "PS: ¼ÓUnity+ulua¼¼ÊõÌÖÂÛÈº£º>>341746602");
+        GUI.Label(new Rect(10, 0, 500, 50), "(1) å•å‡» \"Lua/Gen Lua Wrap Files\"ã€‚");
+        GUI.Label(new Rect(10, 20, 500, 50), "(2) è¿è¡ŒUnityæ¸¸æˆ");
+        GUI.Label(new Rect(10, 40, 500, 50), "PS: æ¸…é™¤ç¼“å­˜ï¼Œå•å‡»\"Lua/Clear LuaBinder File + Wrap Files\"ã€‚");
+        GUI.Label(new Rect(10, 60, 900, 50), "PS: è‹¥è¿è¡Œåˆ°çœŸæœºï¼Œè¯·è®¾ç½®Const.DebugMode=falseï¼Œæœ¬åœ°è°ƒè¯•è¯·è®¾ç½®Const.DebugMode=true");
+        GUI.Label(new Rect(10, 80, 500, 50), "PS: åŠ Unity+uluaæŠ€æœ¯è®¨è®ºç¾¤ï¼š>>341746602");
     }
 }

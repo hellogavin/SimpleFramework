@@ -375,14 +375,10 @@ public class Util : MonoBehaviour {
     public static string DataPath {
         get {
             string game = Const.AppName.ToLower();
-            string dataPath = Application.dataPath;
-
-            if (Application.platform == RuntimePlatform.IPhonePlayer) {
-                string path = Path.GetDirectoryName(Path.GetDirectoryName(dataPath));
-                return Path.Combine(path, "Documents/" + game + "/");
-            } else if (Application.platform == RuntimePlatform.Android) {
-                return "/sdcard/" + game + "/";
-            }
+            if (Application.platform == RuntimePlatform.IPhonePlayer || 
+                Application.platform == RuntimePlatform.Android) {
+                return Application.persistentDataPath + "/" + game + "/";
+            } 
             if (Const.DebugMode) {
                 string target = string.Empty;
                 if (Application.platform == RuntimePlatform.OSXEditor ||
@@ -392,7 +388,7 @@ public class Util : MonoBehaviour {
                 } else {
                     target = "android";
                 }
-                return dataPath + "/StreamingAssets/" + target + "/";
+                return Application.dataPath + "/StreamingAssets/" + target + "/";
             }
             return "c:/" + game + "/";
         }

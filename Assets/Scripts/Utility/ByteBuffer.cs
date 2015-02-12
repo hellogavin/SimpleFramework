@@ -68,6 +68,11 @@ public class ByteBuffer {
         writer.Write(bytes);
     }
 
+    public void WriteBytes(byte[] v) {
+        writer.Write((ushort)v.Length);
+        writer.Write(v);
+    }
+
     public int ReadByte () {
         return (int)reader.ReadByte(); 
     }
@@ -101,6 +106,11 @@ public class ByteBuffer {
         byte[] buffer = new byte[len];
         buffer = reader.ReadBytes(len);
         return Encoding.UTF8.GetString(buffer);
+    }
+
+    public byte[] ReadBytes() {
+        ushort len = ReadShort();
+        return reader.ReadBytes(len);
     }
 
     public byte[] ToBytes() {

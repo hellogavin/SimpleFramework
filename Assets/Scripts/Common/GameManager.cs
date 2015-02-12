@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,18 +11,18 @@ public class GameManager : BaseLua {
     private string message;
 
     /// <summary>
-    /// ³õÊ¼»¯ÓÎÏ·¹ÜÀíÆ÷
+    /// åˆå§‹åŒ–æ¸¸æˆç®¡ç†å™¨
     /// </summary>
     void Awake () {
         Init();
     }
 
     /// <summary>
-    /// ³õÊ¼»¯
+    /// åˆå§‹åŒ–
     /// </summary>
     void Init() {
         InitGui();
-        DontDestroyOnLoad(gameObject);  //·ÀÖ¹Ïú»Ù×Ô¼º
+        DontDestroyOnLoad(gameObject);  //é˜²æ­¢é”€æ¯è‡ªå·±
 
         Util.Add<PanelManager>(gameObject);
         Util.Add<MusicManager>(gameObject);
@@ -30,13 +30,13 @@ public class GameManager : BaseLua {
         Util.Add<SocketClient>(gameObject);
         Util.Add<NetworkManager>(gameObject);
 
-        CheckExtractResource(); //ÊÍ·Å×ÊÔ´
+        CheckExtractResource(); //é‡Šæ”¾èµ„æº
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = Const.GameFrameRate;
     }
 
     /// <summary>
-    /// ³õÊ¼»¯GUI
+    /// åˆå§‹åŒ–GUI
     /// </summary>
     public void InitGui() {
         string name = "GUI";
@@ -49,21 +49,21 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
-    /// ÊÍ·Å×ÊÔ´
+    /// é‡Šæ”¾èµ„æº
     /// </summary>
     public void CheckExtractResource() {
         bool isExists = Directory.Exists(Util.DataPath) &&
           Directory.Exists(Util.DataPath + "lua/") && File.Exists(Util.DataPath + "files.txt");
         if (isExists || Const.DebugMode) {
             Util.Add<ResourceManager>(gameObject);
-            return;   //ÎÄ¼şÒÑ¾­½âÑ¹¹ıÁË£¬×Ô¼º¿ÉÌí¼Ó¼ì²éÎÄ¼şÁĞ±íÂß¼­
+            return;   //æ–‡ä»¶å·²ç»è§£å‹è¿‡äº†ï¼Œè‡ªå·±å¯æ·»åŠ æ£€æŸ¥æ–‡ä»¶åˆ—è¡¨é€»è¾‘
         }
-        StartCoroutine(OnExtractResource());    //Æô¶¯ÊÍ·ÅĞ­³É 
+        StartCoroutine(OnExtractResource());    //å¯åŠ¨é‡Šæ”¾åæˆ 
     }
 
     IEnumerator OnExtractResource() {
-        string dataPath = Util.DataPath;  //Êı¾İÄ¿Â¼
-        string resPath = Util.AppContentPath(); //ÓÎÏ·°ü×ÊÔ´Ä¿Â¼
+        string dataPath = Util.DataPath;  //æ•°æ®ç›®å½•
+        string resPath = Util.AppContentPath(); //æ¸¸æˆåŒ…èµ„æºç›®å½•
 
         if (Directory.Exists(dataPath)) Directory.Delete(dataPath);
         Directory.CreateDirectory(dataPath);
@@ -72,7 +72,7 @@ public class GameManager : BaseLua {
         string outfile = dataPath + "files.txt";
         if (File.Exists(outfile)) File.Delete(outfile);
 
-        message = "ÕıÔÚ½â°üÎÄ¼ş:>files.txt";
+        message = "æ­£åœ¨è§£åŒ…æ–‡ä»¶:>files.txt";
         Debug.Log(message);
         if (Application.platform == RuntimePlatform.Android) {
             WWW www = new WWW(infile);
@@ -85,13 +85,13 @@ public class GameManager : BaseLua {
         } else File.Copy(infile, outfile, true);
         yield return new WaitForEndOfFrame();
 
-        //ÊÍ·ÅËùÓĞÎÄ¼şµ½Êı¾İÄ¿Â¼
+        //é‡Šæ”¾æ‰€æœ‰æ–‡ä»¶åˆ°æ•°æ®ç›®å½•
         string[] files = File.ReadAllLines(outfile);
         foreach (var file in files) {
             infile = resPath + file;  //
             outfile = dataPath + file;
-            message = "ÕıÔÚ½â°üÎÄ¼ş:>" + file;
-            Debug.Log("ÕıÔÚ½â°üÎÄ¼ş:>" + infile);
+            message = "æ­£åœ¨è§£åŒ…æ–‡ä»¶:>" + file;
+            Debug.Log("æ­£åœ¨è§£åŒ…æ–‡ä»¶:>" + infile);
 
             string dir = Path.GetDirectoryName(outfile);
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
@@ -107,11 +107,11 @@ public class GameManager : BaseLua {
             } else File.Copy(infile, outfile, true);
             yield return new WaitForEndOfFrame();
         }
-        message = "½â°üÍê³É!!!";
+        message = "è§£åŒ…å®Œæˆ!!!";
         yield return new WaitForSeconds(0.1f);
         message = string.Empty;
 
-        //ÊÍ·ÅÍê³É£¬¿ªÊ¼Æô¶¯×ÊÔ´¹ÜÀíÆ÷(´Ë´¦¿ÉÌí¼Ó¸üĞÂ´úÂë)
+        //é‡Šæ”¾å®Œæˆï¼Œå¼€å§‹å¯åŠ¨èµ„æºç®¡ç†å™¨(æ­¤å¤„å¯æ·»åŠ æ›´æ–°ä»£ç )
         Util.Add<ResourceManager>(gameObject);
     }
 
@@ -120,38 +120,38 @@ public class GameManager : BaseLua {
     }
 
     /// <summary>
-    /// ×ÊÔ´³õÊ¼»¯½áÊø
+    /// èµ„æºåˆå§‹åŒ–ç»“æŸ
     /// </summary>
     public void OnResourceInited() {
         luaMgr = new LuaScriptMgr();
         luaMgr.Start();
 
-        luaMgr.DoFile("game");      //¼ÓÔØÓÎÏ·
-        luaMgr.DoFile("network");   //¼ÓÔØÍøÂç
+        luaMgr.DoFile("game");      //åŠ è½½æ¸¸æˆ
+        luaMgr.DoFile("network");   //åŠ è½½ç½‘ç»œ
 
         object[] panels = CallMethod("LuaScriptPanel");
-        //---------------------LuaÃæ°å---------------------------
+        //---------------------Luaé¢æ¿---------------------------
         foreach (object o in panels) {
             string name = o.ToString().Trim();
             if (string.IsNullOrEmpty(name)) continue;
-            name += "Panel";    //Ìí¼Ó
+            name += "Panel";    //æ·»åŠ 
 
             luaMgr.DoFile(name);
             Debug.LogWarning("LoadLua---->>>>" + name + ".lua"); 
         }
         //------------------------------------------------------------
-        CallMethod("OnInitOK");   //³õÊ¼»¯Íê³É
+        CallMethod("OnInitOK");   //åˆå§‹åŒ–å®Œæˆ
     }
 
     /// <summary>
-    /// ³õÊ¼»¯³¡¾°
+    /// åˆå§‹åŒ–åœºæ™¯
     /// </summary>
     public void OnInitScene() {
         Debug.Log("OnInitScene-->>" + Application.loadedLevelName);
     }
 
     /// <summary>
-    /// Îö¹¹º¯Êı
+    /// ææ„å‡½æ•°
     /// </summary>
     void OnDestroy() {
         Debug.Log("~GameManager was destroyed");

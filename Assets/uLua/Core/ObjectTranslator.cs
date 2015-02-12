@@ -44,30 +44,41 @@ namespace LuaInterface
 		public readonly Dictionary<object, int> objectsBackMap = new Dictionary<object, int>(new CompareObject());
 		internal LuaState interpreter;
 		public MetaFunctions metaFunctions;
-		public List<Assembly> assemblies;
+        public List<Assembly> assemblies = new List<Assembly>();
 		private LuaCSFunction registerTableFunction,unregisterTableFunction,getMethodSigFunction,
 		getConstructorSigFunction,importTypeFunction,loadAssemblyFunction, ctypeFunction, enumFromIntFunction;
 		
 		internal EventHandlerContainer pendingEvents = new EventHandlerContainer();
-		
-		public static ObjectTranslator FromState(IntPtr luaState)
-		{
-			LuaDLL.lua_getglobal(luaState, "_translator");
-			IntPtr thisptr = LuaDLL.lua_touserdata(luaState, -1);
-			LuaDLL.lua_pop(luaState, 1);
-			
-			GCHandle handle = GCHandle.FromIntPtr(thisptr);
-			ObjectTranslator translator = (ObjectTranslator)handle.Target;
-			
-			return translator;
-		}
+
+        int indexTranslator = 0;
+        static List<ObjectTranslator> list = new List<ObjectTranslator>();
+        public static ObjectTranslator FromState(IntPtr luaState) {
+            //LuaDLL.lua_getglobal(luaState, "_translator");
+            //IntPtr thisptr = LuaDLL.lua_touserdata(luaState, -1);
+            //LuaDLL.lua_pop(luaState, 1);
+
+            //GCHandle handle = GCHandle.FromIntPtr(thisptr);
+            //ObjectTranslator translator = (ObjectTranslator)handle.Target;
+            //return translator;
+
+            LuaDLL.lua_getglobal(luaState, "_translator");
+            int pos = (int)LuaDLL.lua_tonumber(luaState, -1);
+            LuaDLL.lua_pop(luaState, 1);
+            return list[pos];
+        }
+
+        public void PushTranslator(IntPtr L) {
+            list.Add(this);
+            LuaDLL.lua_pushnumber(L, indexTranslator);
+            LuaDLL.lua_setglobal(L, "_translator");
+            ++indexTranslator;
+        }
 		
 		public ObjectTranslator(LuaState interpreter,IntPtr luaState)
 		{	
 			this.interpreter=interpreter;
 			typeChecker=new CheckType(this);
 			metaFunctions=new MetaFunctions(this);
-			assemblies=new List<Assembly>();
 			assemblies.Add(Assembly.GetExecutingAssembly());
 
 			importTypeFunction=new LuaCSFunction(importType);

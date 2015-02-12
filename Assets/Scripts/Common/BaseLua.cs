@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using LuaInterface;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ public class BaseLua : MonoBehaviour {
     private LuaScriptMgr mgr = null;
     private AssetBundle bundle = null;
     /// <summary>
-    /// Lua¹ÜÀíÆ÷
+    /// Luaç®¡ç†å™¨
     /// </summary>
     protected LuaScriptMgr luaMgr {
         get {
@@ -34,16 +34,16 @@ public class BaseLua : MonoBehaviour {
     }
 
     /// <summary>
-    /// ³õÊ¼»¯Ãæ°å
+    /// åˆå§‹åŒ–é¢æ¿
     /// </summary>
     public void OnInit(AssetBundle bundle, string text = null) {
-        this.data = text;   //³õÊ¼»¯¸½¼Ó²ÎÊı
-        this.bundle = bundle; //³õÊ¼»¯
+        this.data = text;   //åˆå§‹åŒ–é™„åŠ å‚æ•°
+        this.bundle = bundle; //åˆå§‹åŒ–
         Debug.LogWarning("OnInit---->>>"+ name +" text:>" + text);
     }
 
     /// <summary>
-    /// »ñÈ¡Ò»¸öGameObject×ÊÔ´
+    /// è·å–ä¸€ä¸ªGameObjectèµ„æº
     /// </summary>
     /// <param name="name"></param>
     public GameObject GetGameObject(string name) {
@@ -53,7 +53,7 @@ public class BaseLua : MonoBehaviour {
 
     //-----------------------------------------------
     /// <summary>
-    /// Ö´ĞĞLua·½·¨-ÎŞ²ÎÊı
+    /// æ‰§è¡ŒLuaæ–¹æ³•-æ— å‚æ•°
     /// </summary>
     protected object[] CallMethod(string func) {
         if (luaMgr == null) return null;
@@ -63,7 +63,7 @@ public class BaseLua : MonoBehaviour {
     }
 
     /// <summary>
-    /// Ö´ĞĞLua·½·¨
+    /// æ‰§è¡ŒLuaæ–¹æ³•
     /// </summary>
     protected object[] CallMethod(string func, GameObject go) {
         if (luaMgr == null) return null;
@@ -73,7 +73,7 @@ public class BaseLua : MonoBehaviour {
     }
 
     /// <summary>
-    /// Ö´ĞĞLua·½·¨-SocketÏûÏ¢
+    /// æ‰§è¡ŒLuaæ–¹æ³•-Socketæ¶ˆæ¯
     /// </summary>
     protected object[] CallMethod(string func, int key, ByteBuffer buffer) {
         if (luaMgr == null) return null;
@@ -86,7 +86,7 @@ public class BaseLua : MonoBehaviour {
     protected void OnDestroy() {
         if (bundle) {
             bundle.Unload(true);
-            bundle = null;  //Ïú»ÙËØ²Ä
+            bundle = null;  //é”€æ¯ç´ æ
         }
         mgr = null;
         Debug.Log("~" + name + " was destroy!");

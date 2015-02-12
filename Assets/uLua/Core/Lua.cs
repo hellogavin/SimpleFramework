@@ -51,13 +51,14 @@ namespace LuaInterface
 
             // Set luanet as global for object translator
             LuaDLL.lua_replace(L, (int)LuaIndexes.LUA_GLOBALSINDEX);
-            translator = new ObjectTranslator(this,L);
+            translator = new ObjectTranslator(this, L);
             LuaDLL.lua_replace(L, (int)LuaIndexes.LUA_GLOBALSINDEX);
 
-			GCHandle handle = GCHandle.Alloc(translator, GCHandleType.Pinned);
-			IntPtr thisptr = GCHandle.ToIntPtr(handle);
-			LuaDLL.lua_pushlightuserdata(L, thisptr);
-			LuaDLL.lua_setglobal(L, "_translator");            
+            translator.PushTranslator(L);
+            //GCHandle handle = GCHandle.Alloc(translator, GCHandleType.Pinned);
+            //IntPtr thisptr = GCHandle.ToIntPtr(handle);
+            //LuaDLL.lua_pushlightuserdata(L, thisptr);
+            //LuaDLL.lua_setglobal(L, "_translator");         
 
             // We need to keep this in a managed reference so the delegate doesn't get garbage collected
 			panicCallback = new LuaCSFunction(LuaStatic.panic);
