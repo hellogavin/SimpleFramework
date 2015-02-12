@@ -87,7 +87,7 @@ public static class ToLua
 
     public static void Generate(params string[] param)
     {
-        Debugger.Log("Begin Generate lua Wrap for class {0}\r\n", className);
+		UnityEngine.Debug.Log("Begin Generate lua Wrap for class "+className+"\r\n");
         sb = new StringBuilder();
         string fullType = type.ToString();
         _C(fullType);
@@ -420,7 +420,7 @@ public static class ToLua
 
             if (m.IsGenericMethod)
             {
-                Debugger.Log("Generic Method {0} cannot be export to lua", m.Name);
+				UnityEngine.Debug.Log("Generic Method "+m.Name+" cannot be export to lua");
                 continue;
             }
 
@@ -1638,7 +1638,7 @@ public static class ToLua
         }
         else
         {
-            Debugger.LogError("CreateParamTypes i am not defined it: " + a.Count);
+			UnityEngine.Debug.LogError("CreateParamTypes i am not defined it: " + a.Count);
         }
     }
 
@@ -1868,7 +1868,7 @@ public static class ToLua
         }
         else
         {
-            Debugger.LogError("not defined type {0}", t);
+			UnityEngine.Debug.LogError("not defined type " + t);
         }
     }
 

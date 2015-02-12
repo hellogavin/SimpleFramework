@@ -164,14 +164,14 @@ public class LuaScriptMgr
 
         //}
         
-        Debugger.Log("Reload lua files over");
+		UnityEngine.Debug.Log("Reload lua files over");
     }
 
     void PrintLua(params string[] param)
     {
         if (param.Length != 2)
         {
-            Debugger.Log("PrintLua [ModuleName]");
+			UnityEngine.Debug.Log("PrintLua [ModuleName]");
             return;
         }
         
@@ -213,7 +213,7 @@ public class LuaScriptMgr
         lua.Dispose();
         lua = null;
 
-        Debugger.Log("Lua module destroy");        
+		UnityEngine.Debug.Log("Lua module destroy");        
     }
 
     public object[] DoString(string str)
@@ -286,7 +286,7 @@ public class LuaScriptMgr
             }
             else
             {
-                Debugger.LogWarning("Lua function {0} not exists", name);
+				UnityEngine.Debug.LogWarning("Lua function "+ name +" not exists");
             }
 
             LuaDLL.lua_settop(L, oldTop);            
@@ -1462,7 +1462,7 @@ public class LuaScriptMgr
     public static int Xml_read (IntPtr L) 
     {
         string xml = GetLuaString(L, 1);
-        Debugger.Log("read {0}", xml);
+		UnityEngine.Debug.Log("read " + xml);
         TextAsset ta = Resources.Load(xml, typeof(TextAsset)) as TextAsset;
         IntPtr buffer = LuaDLL.lua_tocbuffer(ta.bytes, ta.bytes.Length);        
         LuaDLL.lua_pushlightuserdata(L, buffer);
@@ -1610,16 +1610,16 @@ public class LuaScriptMgr
             switch(t)
             {
                 case LuaTypes.LUA_TSTRING:
-                    Debugger.Log(LuaDLL.lua_tostring(L, i));
+					UnityEngine.Debug.Log(LuaDLL.lua_tostring(L, i));
                     break;
                 case LuaTypes.LUA_TBOOLEAN:
-                    Debugger.Log(LuaDLL.lua_toboolean(L, i).ToString());
+					UnityEngine.Debug.Log(LuaDLL.lua_toboolean(L, i).ToString());
                     break;
                 case LuaTypes.LUA_TNUMBER:
-                    Debugger.Log(LuaDLL.lua_tonumber(L, i).ToString());
+					UnityEngine.Debug.Log(LuaDLL.lua_tonumber(L, i).ToString());
                     break;                
                 default:
-                    Debugger.Log(LuaDLL.lua_typename(L, t));
+					UnityEngine.Debug.Log(LuaDLL.lua_typename(L, t));
                     break;
             }
         }
