@@ -14,7 +14,6 @@ using System.Reflection;
 
 public static class LuaBinding
 {
-    public static bool inUnityAll = false;
     public class BindType
     {
         public string name;
@@ -81,7 +80,8 @@ public static class LuaBinding
         public BindType(Type t)
         {
             string str = t.ToString();
-            libName = GetTypeStr(str);
+            str = GetTypeStr(str);
+            libName = str;
             type = t;
 
             if (t.BaseType != null)
@@ -166,25 +166,24 @@ public static class LuaBinding
         //_GT(typeof(Type)),
         
         ////u3d
-        /*
-        _GT(typeof(Time)),
-        _GT(typeof(Vector2)),
-        _GT(typeof(Vector3)),        
-        _GT(typeof(GameObject)),
-        _GT(typeof(Component)),        
+        //_GT(typeof(Time)),
+        //_GT(typeof(Vector2)),
+        //_GT(typeof(Vector3)),        
+        //_GT(typeof(GameObject)),
+        //_GT(typeof(Component)),        
         
-        _GT(typeof(Behaviour)),
-        _GT(typeof(Transform)),
-        _GT(typeof(Resources)),
-        _GT(typeof(TextAsset)),    
-        _GT(typeof(Keyframe)),       
-        _GT(typeof(AnimationCurve)),
-        _GT(typeof(Motion)),
-        _GT(typeof(AnimationClip)),
+        //_GT(typeof(Behaviour)),
+        //_GT(typeof(Transform)),
+        //_GT(typeof(Resources)),
+        //_GT(typeof(TextAsset)),    
+        //_GT(typeof(Keyframe)),       
+        //_GT(typeof(AnimationCurve)),
+        //_GT(typeof(Motion)),
+        //_GT(typeof(AnimationClip)),
 
-        _GT(typeof(MonoBehaviour)),
-        */
-        ////内部
+        //_GT(typeof(MonoBehaviour)),
+
+       ////内部
         //_GT(typeof(IAssetFile)),        
         //_GT(typeof(UIBase)),
         //_GT(typeof(UIEventListener)),
@@ -197,7 +196,17 @@ public static class LuaBinding
         ////_GT(typeof(Dictionary<int,string>)).SetWrapName("DictInt2Str").SetLibName("DictInt2Str"),
         //_GT(typeof(Light)),
         //_GT(typeof(LightType)),
-		
+
+        ////ngui
+        //_GT(typeof(UIRect)),
+        //_GT(typeof(UIWidget)),
+        //_GT(typeof(UILabel)),                 
+        //_GT(typeof(UIEventListener)),                
+        //_GT(typeof(UILabel.Effect)),       
+        //_GT(typeof(Localization)),   
+        //_GT(typeof(UICamera)),
+
+
 		//NGUI+自定义
 		_GT(typeof(ioo)),
 		_GT(typeof(Util)),
@@ -210,11 +219,12 @@ public static class LuaBinding
 		_GT(typeof(UIEventListener)),
         _GT(typeof(TimerManager)),
         _GT(typeof(LuaHelper)),
+        _GT(typeof(BaseLua)),
 
+        //系统自带
 		_GT(typeof(Hashtable)),
         _GT(typeof(Vector2)),
         _GT(typeof(Vector3)),
-        _GT(typeof(BaseLua)),
         _GT(typeof(GameObject)),
         _GT(typeof(Transform)),
         _GT(typeof(Type)),
@@ -224,8 +234,8 @@ public static class LuaBinding
         _GT(typeof(Time)),
         _GT(typeof(Application)),
     };
-/*
-    [MenuItem("Lua/Gen LuaBinding Files", false, 11)]
+
+    [MenuItem("Lua/Gen Lua Wrap Files", false, 11)]
     public static void Binding()
     {
         if (!Application.isPlaying)
@@ -253,6 +263,7 @@ public static class LuaBinding
         }
 
         EditorApplication.isPlaying = false;
+        //GenRegFile(binds);
         StringBuilder sb1 = new StringBuilder();
 
         for (int i = 0; i < binds.Length; i++)
@@ -260,12 +271,48 @@ public static class LuaBinding
             sb1.AppendFormat("\t\t{0}Wrap.Register(L);\r\n", binds[i].wrapName);
         }
 
-        //GenRegFile(binds);
         Debug.Log("Generate lua binding files over");
         Debug.Log(sb1.ToString());
         AssetDatabase.Refresh();
     }
-    */
+
+    [MenuItem("Thinky/Gen LuaBinder File", false, 12)]
+    static void GenLuaBinder()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine("using System;");
+        sb.AppendLine();
+        sb.AppendLine("public static class LuaBinder");
+        sb.AppendLine("{");
+        sb.AppendLine("\tpublic static void Bind(IntPtr L)");
+        sb.AppendLine("\t{");
+        sb.AppendLine("\t\tobjectWrap.Register(L);");
+        sb.AppendLine("\t\tObjectWrap.Register(L);");                
+
+        string[] files = Directory.GetFiles("Assets/Source/LuaWrap/", "*.cs", SearchOption.TopDirectoryOnly);
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            string wrapName = Path.GetFileName(files[i]);
+            int pos = wrapName.LastIndexOf(".");
+            wrapName = wrapName.Substring(0, pos);
+            sb.AppendFormat("\t\t{0}.Register(L);\r\n", wrapName);
+        }
+
+        sb.AppendLine("\t}");
+        sb.AppendLine("}");
+
+        string file = Application.dataPath + "/Source/LuaWrap/Base/LuaBinder.cs";
+
+        using (StreamWriter textWriter = new StreamWriter(file, false, Encoding.UTF8))
+        {
+            textWriter.Write(sb.ToString());
+            textWriter.Flush();
+            textWriter.Close();
+        }
+        AssetDatabase.Refresh();
+    }
+
     [MenuItem("Lua/Clear LuaBinder File", false, 13)]
     static void ClearLuaBinder()
     {
@@ -291,7 +338,7 @@ public static class LuaBinding
         AssetDatabase.Refresh();
     }
 
-    [MenuItem("Lua/Gen LuaBinding Files", false, 11)]
+    [MenuItem("Lua/Gen u3d Wrap Files", false, 11)]
     public static void U3dBinding()
     {
         List<string> dropList = new List<string>
@@ -384,39 +431,32 @@ public static class LuaBinding
         };
 
         List<BindType> list = new List<BindType>();
-        //生成自定义类
-        for (int i = 0; i < binds.Length; i++) {
-            list.Add(binds[i]);
-        }
+        Assembly assembly = Assembly.Load("UnityEngine");
+        Type[] types = assembly.GetExportedTypes();
 
-        //再生成Unity类
-        if (inUnityAll) {
-            Assembly assembly = Assembly.Load("UnityEngine");
-            Type[] types = assembly.GetExportedTypes();
-
-            for (int i = 0; i < types.Length; i++) {
-                //不导出： 模版类，event委托, c#协同相关, obsolete 类
-                if (!types[i].IsGenericType && types[i].BaseType != typeof(System.MulticastDelegate) &&
-                    !typeof(YieldInstruction).IsAssignableFrom(types[i]) && !ToLua.IsObsolete(types[i])) {
-                    list.Add(_GT(types[i]));
-                } else {
-                    Debug.LogError("drop generic type " + types[i].ToString());
-                }
+        for (int i = 0; i < types.Length; i++)
+        {
+            //不导出： 模版类，event委托, c#协同相关, obsolete 类
+            if (!types[i].IsGenericType && types[i].BaseType != typeof(System.MulticastDelegate) &&
+                !typeof(YieldInstruction).IsAssignableFrom(types[i]) && !ToLua.IsObsolete(types[i]))
+            {
+                list.Add(_GT(types[i]));
+            }
+            else
+            {
+                Debug.Log("drop generic type " + types[i].ToString());
             }
         }
 
-        for (int i = 0; i < dropList.Count; i++) {
-            list.RemoveAll((p) => {
-                string ptype = p.type.ToString();
-                for (int j = 0; j < binds.Length; j++) { 
-                    if (ptype.Equals(binds[j].wrapName)) return false;
-                }
-                return ptype.Contains(dropList[i]); 
-            });
+        for (int i = 0; i < dropList.Count; i++)
+        {
+            list.RemoveAll((p) => { return p.type.ToString().Contains(dropList[i]); });
         }
 
-        for (int i = 0; i < list.Count; i++) {
-            try {
+        for (int i = 0; i < list.Count; i++)
+        {
+            try
+            {
                 ToLua.Clear();
                 ToLua.className = list[i].name;
                 ToLua.type = list[i].type;
@@ -425,44 +465,16 @@ public static class LuaBinding
                 ToLua.wrapClassName = list[i].wrapName;
                 ToLua.libClassName = list[i].libName;
                 ToLua.Generate(null);
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Debug.LogWarning("Generate wrap file error: " + e.ToString());
             }
         }
-        GenRegFile(list.ToArray());
+
+        GenLuaBinder();
         Debug.Log("Generate lua binding files over， Generate " + list.Count + " files");
         AssetDatabase.Refresh();
-    }
-
-    static void GenRegFile(BindType[] bts)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.AppendLine("using System;");
-        sb.AppendLine("public static class LuaBinder");
-        sb.AppendLine("{");
-        sb.AppendLine("\tpublic static void Bind(IntPtr L)");
-        sb.AppendLine("\t{");
-        sb.AppendLine("\t\tobjectWrap.Register(L);");
-        sb.AppendLine("\t\tObjectWrap.Register(L);");
-        sb.AppendLine("\t\tcoroutineWrap.Register(L);");        
-
-
-        for (int i = 0; i < bts.Length; i++)
-        {
-            sb.AppendFormat("\t\t{0}Wrap.Register(L);\r\n", bts[i].wrapName);
-        }
-
-        sb.AppendLine("\t}");
-        sb.AppendLine("}");
-
-        string file = Application.dataPath + "/Source/LuaWrap/Base/LuaBinder.cs";
-
-        using (StreamWriter textWriter = new StreamWriter(file, false, Encoding.UTF8))
-        {
-            textWriter.Write(sb.ToString());
-            textWriter.Flush();
-            textWriter.Close();
-        }
     }
 
     static string GetOS()

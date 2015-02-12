@@ -49,6 +49,6 @@ function OnClick()
     buffer:WriteShort(Login);
     buffer:WriteString("ffff我的ffffQ靈uuu");
     buffer:WriteInt(200);
-    io.networkManager:SendMessage(buffer);
+    ioo.networkManager:SendMessage(buffer);
 	warn("OnClick---->>>"..gameObject.name);
 end
