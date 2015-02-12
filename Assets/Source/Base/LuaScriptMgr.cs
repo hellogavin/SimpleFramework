@@ -136,19 +136,6 @@ public class LuaScriptMgr
         //CmdTable.RegisterCommand("LuaGC", LuaGC);        
     }
 
-    void OpenXml()
-    {
-        IntPtr L = lua.L;
-        LuaDLL.luaopen_LuaXML(L);
-        LuaDLL.lua_getglobal(L, "xml");
-
-        LuaDLL.lua_pushstring(L, "read");
-        LuaDLL.lua_pushstdcallcfunction(L, Xml_read);
-        LuaDLL.lua_rawset(L, -3);
-
-        LuaDLL.lua_settop(L, 0);
-    }
-
     void Bind()
     {
         IntPtr L = lua.L;
@@ -1545,17 +1532,6 @@ public class LuaScriptMgr
         ObjectTranslator translator = _translator;
 #endif
         return translator.getObject(L, stackPos);
-    }
-
-    [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-    public static int Xml_read (IntPtr L) 
-    {
-        string xml = GetLuaString(L, 1);
-		UnityEngine.Debug.Log("read " + xml);
-        TextAsset ta = Resources.Load(xml, typeof(TextAsset)) as TextAsset;
-        IntPtr buffer = LuaDLL.lua_tocbuffer(ta.bytes, ta.bytes.Length);        
-        LuaDLL.lua_pushlightuserdata(L, buffer);
-        return 1;
     }
 
     [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]

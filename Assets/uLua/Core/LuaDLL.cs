@@ -80,9 +80,6 @@ namespace LuaInterface
         public static extern int luaopen_pb(IntPtr L);
 
         [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int luaopen_LuaXML(IntPtr L);
-
-        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern int luaopen_ffi(IntPtr L);
 
         //[DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
@@ -321,7 +318,14 @@ namespace LuaInterface
 		public static extern bool lua_toboolean(IntPtr luaState, int index);
 
 		[DllImport(LUADLL,CallingConvention = CallingConvention.Cdecl)]
-		public static extern IntPtr lua_tolstring(IntPtr luaState, int index, out int strLen);
+        public static extern IntPtr lua_tolstring(IntPtr luaState, int index, out IntPtr strLen);
+
+        public static IntPtr lua_tolstring(IntPtr luaState, int index, out int len) {
+            IntPtr ptr;
+            IntPtr result = lua_tolstring(luaState, index, out ptr);
+            len = ptr.ToInt32();
+            return result;
+        }
 
 		public static string lua_tostring(IntPtr luaState, int index)
 		{
@@ -394,8 +398,5 @@ namespace LuaInterface
 
         [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void lua_pushcclosure(IntPtr luaState, IntPtr fn, int n);
-
-        [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr lua_tocbuffer(byte[] bytes, int n);
 	}
 }
